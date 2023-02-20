@@ -1,0 +1,86 @@
+@import "styles";
+
+.room_container{
+    width:20rem;height:auto;background-color:white;margin-top:2rem;
+    display:flex;flex-direction: column;align-items: center;border-radius: 10px;
+}
+.room_name{
+align-self:center;font-size:2rem;margin-top:1rem;
+}
+.room_desc{
+width:15rem;height:auto; margin-bottom:2rem;margin-top: 2rem;text-align: center;
+}
+.room_limit_container{
+    display:flex;flex-direction: row;margin-bottom:.5rem;width:100%;justify-content: space-around;
+}
+.room_time_limit{
+    font-size:.7rem;margin-right:5rem;
+}
+.room_voter_limit{
+    font-size:.7rem
+}
+.room_options{
+    display:flex;flex-direction: row;flex-wrap: wrap;justify-content: space-around;
+    width:20rem;height:auto;
+}
+.option_container_before{
+    border:1px solid #eee;width:8rem;height:10rem;display:flex;flex-direction: column;align-items: center;justify-content: center;
+    margin-bottom:2rem;box-shadow:8px 10px 24px -11px rgba(0,0,0,0.2);transition: all .3s;border-radius: 10px;
+}
+.option_container_after{
+    border:1px solid #eee;width:8rem;height:10rem;display:flex;flex-direction: column;align-items: center;justify-content: center;
+    margin-bottom:2rem;box-shadow:8px 10px 24px -11px rgba(0,0,0,0.2);background-color: $secondaryColor;transition: all .3s;
+    border-radius: 10px;
+}
+.option_image{
+    width:4rem;height:4rem;border:1px solid green;margin-bottom:.5rem;
+}
+.option_name_before{
+    margin-bottom:.5rem;font-size:1rem;color:black;
+}
+.option_name_after{
+    margin-bottom:.5rem;font-size:1rem;color:white;
+}
+.tick_container_before{
+    border:1px solid black;width:2rem;height:2rem;border-radius: 50%;display:flex;justify-content: center;align-items: center;
+    cursor:pointer;
+}
+
+.tick_container_after{
+    border:1px solid white;width:2rem;height:2rem;border-radius: 50%;display:flex;justify-content: center;align-items: center;
+    cursor:pointer;
+}
+.tick_icon{
+    color:black;
+}
+.voting_btn{
+    border:1px solid black;width:4rem;height:2rem;justify-content: center;align-items: center;display:flex;
+    margin-top:2rem;cursor:pointer;margin-bottom:2rem;transition:all .2s;margin:0 auto;
+    &:hover{
+        background-color: $primaryColor;
+        .voting_btn_text{
+            color:white;
+        }
+    }
+}
+.voting_btn_disabled{
+    opacity:40%
+}
+.room_voter_limit_before{
+    color:black;font-size:.7rem
+}
+.room_voter_limit_after{
+    color:$primaryColor;font-size:.7rem
+}
+.winner_text{
+    text-align: center;
+}
+.winner_container{
+    height:25rem;width:15rem;display:flex;flex-direction: column;align-items: center;
+}
+.crown_icon{
+    position: absolute;margin-left:10rem;margin-top: -1rem;rotate:45deg;
+}
+.winner_image{
+    width:10rem;height:10rem;border:1px solid red;margin-top:2rem
+}

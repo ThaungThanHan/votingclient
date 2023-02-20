@@ -1,0 +1,66 @@
+.roomcreation_container{
+    border:1px solid blue;align-items: center;justify-content: center;display:flex;flex-direction: column;
+}
+.room_form_container{
+    display:flex;flex-direction: column;width:100%;max-width:100%
+}
+.roomcreation_header{
+    margin-bottom:1rem;
+}
+.form_title{
+    display:flex;flex-direction: row;  align-items: center;
+}
+.form_tick_before{
+    border:1px solid #eee;width:0.5rem;height:0.5rem;background-color: #eee;border-radius: 50%;margin-right:.5rem;
+}
+.form_tick_after{
+    border:1px solid #eee;width:0.5rem;height:0.5rem;background-color: green;border-radius: 50%;margin-right:.5rem;
+}
+.roomForm_input{
+    border:1px solid #eee;border-radius: .5rem;min-height:1.5rem;max-height:10rem;margin-top:.5rem;max-width:18rem;min-width:18rem;
+    margin-bottom:1.5rem;padding:.5rem;
+    &:focus{
+        outline:none;
+    }
+}
+.form_datetime{
+    display:flex;flex-direction: row;align-items: center;justify-content: space-between;
+}
+
+.form_time_picker{
+    margin-bottom:1rem;margin-top:1rem;width:9rem
+}
+.form_date_picker{
+    width:10rem;height:2rem;margin-left:.5rem;margin-top:1rem;margin-bottom: 1rem;border:1px solid #eee;border-radius: 5px;
+    &:focus{
+        outline:none
+    }
+}
+
+.form_options{
+    display:flex;flex-direction: row;align-items: center;margin-top:1rem;justify-content: space-between;
+}
+.options_image{
+    border:1px solid black;width:5rem;height:5rem;
+}
+.options_input{
+    height:1.5rem;border:1px solid #eee;border-radius:.5rem;
+    &:focus{
+        outline: none;
+    }
+}
+.options_remove{
+    align-self:flex-end;margin-left:7rem;cursor:pointer
+}
+.plus_options{
+    border:1px solid black;width:1.5rem;height:1.5rem;border-radius: 50%;display:flex;align-items: center;justify-content: center;
+    margin-left:15rem;cursor:pointer
+}
+
+.optionsForm_btnContainer{
+    height:5rem;display:flex;justify-content: center;align-items: center;
+}
+.optionsForm_createBtn{
+    display:flex;justify-content: center;align-items: center;border:1px solid black;width:10rem;height:2rem;
+    border-radius: 5px;cursor:pointer
+}

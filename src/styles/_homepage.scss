@@ -1,0 +1,27 @@
+@import "styles";
+
+.homepageContainer{
+    padding-top:8rem;display:flex;flex-direction: column;align-items: center;
+    width:18rem;height:100%;justify-content: center;background-color: $primaryColor;
+}
+.homepage_Search{
+    margin-top:2rem;width:100%;height:3rem;border-radius:1rem;border:1px solid #eee;padding-left:1rem;
+    &:focus{
+        outline:none
+    }
+}
+.Search_btn{
+    margin-top:2rem;border:1px solid #eee;width:15rem;height:3rem;display: flex;align-items: center;justify-content: center;
+    cursor:pointer;background-color: white;box-shadow:8px 10px 24px -11px rgba(0,0,0,0.75);transition:all .2s;
+    &:hover{
+        background-color: black;
+        .Search_btn_text{color:$primaryColor;}
+    }
+}
+.register_btn{
+    margin-top:2rem;border:1px solid #eee;width:15rem;height:3rem;display: flex;align-items: center;justify-content: center;
+    cursor:pointer;
+}
+.Search_btn_text{
+    color:black;font-size:1rem
+}
