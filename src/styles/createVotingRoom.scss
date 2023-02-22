@@ -39,9 +39,16 @@
 
 .form_options{
     display:flex;flex-direction: row;align-items: center;margin-top:1rem;justify-content: space-between;
+    
 }
 .options_image{
-    border:1px solid black;width:5rem;height:5rem;
+    width:5rem;height:5rem;cursor:pointer;
+}
+.default_avatar{
+    border-radius:5px;width:100%;height:100%
+}
+.avatar_picker{
+    display:none
 }
 .options_input{
     height:1.5rem;border:1px solid #eee;border-radius:.5rem;

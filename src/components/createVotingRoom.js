@@ -3,11 +3,12 @@ import DatePicker from "react-datepicker";
 import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
-
+import Default from "../assets/images/default_avatar.png"
 import "../styles/createVotingRoom.scss";
 import {FaPlus} from "react-icons/fa"
 const CreateVotingRoom = () => {
     const [numberOptions,setNumberOptions] = useState([{id:0}]);
+    const [image,setImage] = useState(null);
     const [options,setOptions] = useState({
         
     });
@@ -77,6 +78,11 @@ const CreateVotingRoom = () => {
         await axios.post("http://localhost:5000/rooms",createRoomData).then(res=>console.log(res)).catch(err=>console.log(err));
 
     }   
+
+    const onClickAvatarUpload = () => {
+        document.getElementById("avatar_picker_id").click();
+    }
+    console.log("IMAGE " + image)
     return (
         <div className="roomcreation_container">
             <h2 className="roomcreation_header">Create your voting room</h2>
@@ -120,8 +126,9 @@ const CreateVotingRoom = () => {
                     </div>
                     {numberOptions.length > 0 && numberOptions.map((option)=>(
                     <div key={option.id} className="form_options">
-                    <div className="options_image">
-
+                    <div onClick={()=>onClickAvatarUpload()} className="options_image">
+                        <input onChange={(e)=>setImage(e.target.value)} accept="image/png, image/jpeg" name="avatar" id="avatar_picker_id" type="file" className="avatar_picker" />
+                        <img src={Default} className="default_avatar" />
                     </div>
                     <div className="options_info">
                         <p>Name</p>

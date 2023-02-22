@@ -3,6 +3,7 @@ import {useParams} from "react-router-dom";
 import axios from "axios";
 import {AiOutlineCheck} from "react-icons/ai"
 import {AiFillCrown} from "react-icons/ai"
+
 import "../styles/VotingRoom.scss"
 const VotingRoom = (props) => {
     const {id} = useParams()
