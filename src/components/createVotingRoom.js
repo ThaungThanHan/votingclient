@@ -35,17 +35,32 @@ const CreateVotingRoom = () => {
         setRoomDesc(e.target.value)
     }
     const handleOptionName =(e,id) => {
+        console.log("NAME NAME " + e.target.name)
         const text = e.target.value;
         setOptions({
             ...options,
             [e.target.name]:{
+                ...options[`${id}`],
                 "name":text
             }
         })
     }
+    const handleOptionImage = (e,id) => {
+        console.log("NAMEEE " + id + " " + e.target.name)
+        if(e.target.files.length > 0 && e.target.files[0]){
+            const image = URL.createObjectURL(e.target.files[0]);
+            setOptions({
+                ...options,
+                [e.target.name]:{
+                    ...options[`${id}`],
+                    "image":image
+                }
+            })
+        }
+    }
     useEffect(()=>{
         if(options){
-            if(Object.keys(options).length > 0 && options[0].name !== ""){
+            if(Object.keys(options).length > 0 && options[0].name && options[0].name !== ""){
                 setHasOptions(true)
             }else{
                 setHasOptions(false)
@@ -61,9 +76,11 @@ const CreateVotingRoom = () => {
             participantsData.push({
                 id:uuidv4().slice(0,6),
                 name:parti.name,
+                avatar:parti.image,
                 votes:0
             })
         })
+
         const createRoomData = {
             "_id":roomId,
             "roomName":roomName,
@@ -82,12 +99,14 @@ const CreateVotingRoom = () => {
     const onClickAvatarUpload = () => {
         document.getElementById("avatar_picker_id").click();
     }
-    console.log("IMAGE " + image)
+    if(options){
+        console.log(options)
+    }
     return (
         <div className="roomcreation_container">
             <h2 className="roomcreation_header">Create your voting room</h2>
             <div className="room_form_container">
-                <div className="room_name">
+                <div className="room_description">
                     <div className="form_title">
                         {roomName == "" ? <span className="form_tick_before" /> : <span className="form_tick_after" /> }
                         <p>Name of the room</p>
@@ -102,7 +121,7 @@ const CreateVotingRoom = () => {
                     </div>
                     <textarea onChange={(e)=>onDescChange(e)} className="roomForm_input" />
                 </div>
-                <div className="room_name">
+                <div className="room_description">
                     <div className="form_title">
                         {roomName == "" ? <span className="form_tick_before" /> : <span className="form_tick_after" /> }
                         <p>Voters limit</p>
@@ -126,13 +145,18 @@ const CreateVotingRoom = () => {
                     </div>
                     {numberOptions.length > 0 && numberOptions.map((option)=>(
                     <div key={option.id} className="form_options">
-                    <div onClick={()=>onClickAvatarUpload()} className="options_image">
-                        <input onChange={(e)=>setImage(e.target.value)} accept="image/png, image/jpeg" name="avatar" id="avatar_picker_id" type="file" className="avatar_picker" />
-                        <img src={Default} className="default_avatar" />
+                    <div className="image_container">
+                        {options && options[`${option.id}`] && options[`${option.id}`].image ?
+                            <img className="default_avatar" src={options[`${option.id}`].image} />
+                        :
+                            <img className="default_avatar" src={Default} />
+                        }
+                        <input onChange={(e)=>handleOptionImage(e,option.id)} accept="image/png, image/jpeg" name={option.id}
+                        id="avatar_picker_id" type="file" className="avatar_picker" />
                     </div>
                     <div className="options_info">
                         <p>Name</p>
-                        <input name={option.id} onChange={(e)=>handleOptionName(e)} className="options_input" />
+                        <input name={option.id} onChange={(e)=>handleOptionName(e,option.id)} className="options_input" />
                         {numberOptions.length > 1 ?<p onClick={()=>handleRemoveOption(option.id)} className="options_remove">Remove</p> : null}
                     </div>
                     </div>
