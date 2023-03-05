@@ -14,9 +14,12 @@ const Homepage = () => {
                 <div className="Search_btn">
                     <p className="Search_btn_text">ENTER</p>
                 </div></Link>
-                <div className="Search_btn">
-                    <p className="Search_btn_text">CREATE AN ACCOUNT</p>
-                </div>
+                <Link style={{textDecoration:"none"}} to="/signup">
+                    <div className="Search_btn">
+                        <p className="Search_btn_text">CREATE A VOTING ROOM</p>
+                    </div>
+                </Link>
+
         </div>
     )
 }
