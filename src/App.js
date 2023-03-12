@@ -6,8 +6,11 @@ import CreateVotingRoom from './components/createVotingRoom';
 import SignUp from './components/signup';
 import Login from './components/login';
 import {Route, Routes} from "react-router-dom";
+import { Provider } from 'react-redux';
+import {store} from "./redux/store.js";
 function App() {
   return (
+    <Provider store={store}>
     <div className="App">
     <Routes>
       <Route path="/" element={<Homepage/>} />
@@ -17,7 +20,7 @@ function App() {
       <Route path="/rooms/:id" element={<VotingRoom/>} />
     </Routes>
     </div>
-
+    </Provider>
   );
 }
 

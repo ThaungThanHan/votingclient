@@ -35,7 +35,6 @@ const CreateVotingRoom = () => {
         setRoomDesc(e.target.value)
     }
     const handleOptionName =(e,id) => {
-        console.log("NAME NAME " + e.target.name)
         const text = e.target.value;
         setOptions({
             ...options,
@@ -46,7 +45,6 @@ const CreateVotingRoom = () => {
         })
     }
     const handleOptionImage = (e,id) => {
-        console.log("NAMEEE " + id + " " + e.target.name)
         if(e.target.files.length > 0 && e.target.files[0]){
             const image = URL.createObjectURL(e.target.files[0]);
             setOptions({
@@ -80,11 +78,12 @@ const CreateVotingRoom = () => {
                 votes:0
             })
         })
-
+        const currentUserId = localStorage.getItem("currentUser");
         const createRoomData = {
             "_id":roomId,
             "roomName":roomName,
             "roomDesc":roomDesc,
+            "currentUserId":currentUserId,
             "endDateTime":endDateTime,
             "participants":participantsData,
             "num_participants":Object.keys(options).length,
@@ -92,7 +91,10 @@ const CreateVotingRoom = () => {
             "voters_limit":numVoters,
             "winner":"",
         }
-        await axios.post("http://localhost:5000/rooms",createRoomData).then(res=>console.log(res)).catch(err=>console.log(err));
+        const token = localStorage.getItem("authKey")
+        await axios.post("http://localhost:5000/rooms",createRoomData,{
+            headers:{Authorization:`Bearer ${token}`}
+        }).then(res=>console.log(res)).catch(err=>console.log(err));
 
     }   
 

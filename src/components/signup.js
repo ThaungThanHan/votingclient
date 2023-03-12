@@ -1,13 +1,29 @@
 import React, {useState,useEffect} from "react";
+import Modal from 'react-modal';
+import axios from "axios"
 import "../styles/signup.scss";
-import {isEqual,isEmail,isValidPassword} from "./functions/validations"
+import {isEqual,isEmail,isValidPassword} from "./functions/validations";
+import { v4 as uuidv4 } from 'uuid';
+
 const SignUp = () => {
+    const [isAuthenticated,setIsAuthenticated] = useState(false);
+    useEffect(()=>{
+        const authToken = localStorage.getItem("authKey");
+        if(!authToken){
+            setIsAuthenticated(false)
+        }else{
+            setIsAuthenticated(true)
+        }
+    },[])
     const [signupForm,setSignUpForm] = useState({
         "username":"",
         "email":"",
         "password":"",
         "confirm_password":"",
     })
+    const [formModal,setFormModal] = useState(false);
+    const [successMes,setSuccessMes] = useState("");
+    const [errMes,setErrMes] = useState("")
     const [hasError,setHasError] = useState(true)
     useEffect(()=>{
         if(isEqual(signupForm.password,signupForm.confirm_password) && isEmail(signupForm.email) && isValidPassword(signupForm.password)){
@@ -16,10 +32,52 @@ const SignUp = () => {
             setHasError(true)
         }
     },[signupForm])
+    const onSubmitSignUp = (e) => {
+        e.preventDefault();
+        const formData = {
+            "userId":uuidv4().slice(0,6),
+            "username":signupForm.username,
+            "email":signupForm.email,
+            "password":signupForm.password,
+        }
+        axios.post("http://localhost:5000/signup",formData).then(res=>{
+            setFormModal(true)
+            setSuccessMes(res.data)
+            setErrMes("")
+        }).catch(err=>{setFormModal(true);setErrMes(err.response.data.error);setSuccessMes("")})
+        return false;
+    }
+    const customStyles = {
+        content:{
+            width:"25rem",height:"10rem",margin:"0 auto",textAlign:"center"
+        }
+    }
     return(
+        <div>
+        {isAuthenticated ?
+            <div className="error_container">
+            <p className="error_container_text">You are already logged in.</p>
+            <div className="error_container_btn"><p className="error_container_btn_text">View profile</p></div>
+            </div>        
+        :
         <div className="signup_container">
             <p>Create an account</p>
-            <form className="form_container">
+            <form onSubmit={(e)=>onSubmitSignUp(e)} className="form_container">
+                <Modal isOpen={formModal} style={customStyles}>
+                    {successMes !== "" ? 
+                    <>
+                    <p className="successModalText">{successMes}</p> 
+                    <div onClick={()=>window.location.replace("/login")} className="modalBtn"><p className="modalBtnText">Login now</p></div>
+
+                    </>
+                     : null}
+                    {errMes !== "" ? 
+                    <>
+                    <p className="errModalText">{errMes}</p> 
+                    <div onClick={()=>setFormModal(false)} className="modalBtn"><p className="modalBtnText">Resume registration</p></div>
+                    </>
+                    : null}
+                </Modal>
                 <div className="input_container">
                     <label className="form_label">Username</label>
                     <input required value={signupForm.username}
@@ -53,6 +111,8 @@ const SignUp = () => {
                 }
             </form>
             <p className="login_text">Do you already have an account? <a className="login_link" href="/login">Log in</a></p>
+        </div>
+        }
         </div>
     )
 }
