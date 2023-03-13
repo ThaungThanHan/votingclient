@@ -1,0 +1,45 @@
+@import "styles";
+.dashboard{
+    width:100%;height:100%
+}
+.dashboard_container{
+    width:100%;height:100vh;display:flex;flex-direction: column;
+}
+.dashboard_sidebar{
+    width:100%;height:5rem;display:flex;
+}
+.dashboard_item{
+    border-left:none;border-right:1px solid black;border-bottom: 1px solid black;
+    width:100%;padding:.5rem;justify-content: center;align-items: center;display:flex;cursor:pointer;
+    &:hover{
+        background-color: white;.dashboard_item_text{color:$primaryColor};border-bottom:none;
+    }
+}
+.dashboard_table{
+    width:100%;height:auto;background-color: white;
+}
+.dashboard_tableheader{
+    border:1px solid red;width:100%;height:.5rem
+}
+.dashboard_tabletitle{
+    color:$primaryColor;font-weight:bold;width:20rem;border-top:none;border-left:none;text-align: center;
+}
+.dahsboard_navbar{
+    border-bottom:1px solid #eee;max-width:100%;height:3rem;background-color: white;display:flex;flex-direction: row;
+    justify-content: space-between;padding-right:4rem;padding-left:4rem;padding-top:1rem;
+}
+.dashboard_tablebody{
+    width:100%;height:2rem;border:1px solid red;
+}
+.dashboard_tablecontent{
+    width:20rem;height:2rem;border-bottom:1px solid #eee;text-align: center;
+}
+.dashboard_username{
+    font-size:1.2rem;
+}
+.dashboard_logout{
+    font-size:1.2rem;cursor:pointer;
+    &:hover{
+        color:$primaryColor;font-weight:bold
+    }
+}

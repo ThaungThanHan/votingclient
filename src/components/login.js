@@ -20,7 +20,6 @@ const Login = () => {
             setIsAuthenticated(true)
         }
     },[])
-    console.log(isAuthenticated)
     const onLogInUser = (e) => {
         e.preventDefault();
         axios.post("http://localhost:5000/login",loginForm).then(res=>{
@@ -53,7 +52,12 @@ const Login = () => {
                 {successMes !== "" ? 
                 <>
                 <p className="successModalText">{successMes}</p> 
-                <div onClick={()=>window.location.replace("/createroom")} className="modalBtn"><p className="modalBtnText">Create a voting room</p></div>
+                <div className="modalbtn_container">
+                    <div onClick={()=>window.location.replace("/createroom")} className="modalBtn"><p className="modalBtnText">Create a voting room</p></div>
+                    <div onClick={()=>window.location.replace(`/dashboard/${localStorage.getItem("currentUser")}`)} className="modalBtn">
+                        <p className="modalBtnText">View dashboard</p>
+                    </div>
+                </div>
                 </>
                 : null}
                 {errMes !== "" ? 
@@ -80,6 +84,7 @@ const Login = () => {
             <p className="login_text">Don't have an account ?<a className="login_link" href="/signup"> Create one</a></p>
         </div>
         }
+
         </div>
     )
 }

@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import Homepage from './components/homepage';
 import VotingRoom from './components/VotingRoom';
 import CreateVotingRoom from './components/createVotingRoom';
+import HostDashboard from './components/HostDashboard';
 import SignUp from './components/signup';
 import Login from './components/login';
 import {Route, Routes} from "react-router-dom";
@@ -18,6 +19,7 @@ function App() {
       <Route path="/signup" element={<SignUp/>} />
       <Route path="/login" element={<Login/>} />
       <Route path="/rooms/:id" element={<VotingRoom/>} />
+      <Route path="/dashboard/:id" element={<HostDashboard/>} />
     </Routes>
     </div>
     </Provider>
