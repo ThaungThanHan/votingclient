@@ -57,7 +57,9 @@ const SignUp = () => {
         {isAuthenticated ?
             <div className="error_container">
             <p className="error_container_text">You are already logged in.</p>
-            <div className="error_container_btn"><p className="error_container_btn_text">View profile</p></div>
+            <div onClick={()=>window.location.replace(`/dashboard/${localStorage.getItem("currentUser")}`)} className="error_container_btn">
+                <p className="error_container_btn_text">View profile</p>
+            </div>
             </div>        
         :
         <div className="signup_container">

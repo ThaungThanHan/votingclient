@@ -5,7 +5,8 @@ import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import Default from "../assets/images/default_avatar.png"
 import "../styles/createVotingRoom.scss";
-import {FaPlus} from "react-icons/fa"
+import {FaPlus} from "react-icons/fa";
+
 const CreateVotingRoom = () => {
     const [numberOptions,setNumberOptions] = useState([{id:0}]);
     const [image,setImage] = useState(null);
@@ -46,7 +47,7 @@ const CreateVotingRoom = () => {
     }
     const handleOptionImage = (e,id) => {
         if(e.target.files.length > 0 && e.target.files[0]){
-            const image = URL.createObjectURL(e.target.files[0]);
+            const image = e.target.files[0];
             setOptions({
                 ...options,
                 [e.target.name]:{
@@ -70,37 +71,43 @@ const CreateVotingRoom = () => {
         const roomId = uuidv4().slice(0,6);
         const participants = Object.values(options);
         const participantsData = [];
+        const participantsImages = [];
         participants.map(parti=>{
             participantsData.push({
                 id:uuidv4().slice(0,6),
                 name:parti.name,
-                avatar:parti.image,
                 votes:0
             })
+            participantsImages.push(parti.image)
         })
         const currentUserId = localStorage.getItem("currentUser");
+        const formData = new FormData();
         const createRoomData = {
             "_id":roomId,
             "roomName":roomName,
             "roomDesc":roomDesc,
             "currentUserId":currentUserId,
             "endDateTime":endDateTime,
-            "participants":participantsData,
+            "participants":JSON.stringify(participantsData),
             "num_participants":Object.keys(options).length,
             "num_voters":0,
             "voters_limit":numVoters,
             "winner":"",
         }
+        Object.entries(createRoomData).forEach(([key,value]) => {
+            formData.append(key,value)
+        })
+        participantsImages.forEach(img=>{
+            formData.append("files",img)
+        })
+        
+        console.log(formData)
         const token = localStorage.getItem("authKey")
-        await axios.post("http://localhost:5000/rooms",createRoomData,{
-            headers:{Authorization:`Bearer ${token}`}
+        await axios.post("http://localhost:5000/rooms",formData,{
+            headers:{"Content-Type": "multipart/form-data"}
         }).then(res=>console.log(res)).catch(err=>console.log(err));
-
     }   
 
-    const onClickAvatarUpload = () => {
-        document.getElementById("avatar_picker_id").click();
-    }
     if(options){
         console.log(options)
     }
@@ -149,7 +156,7 @@ const CreateVotingRoom = () => {
                     <div key={option.id} className="form_options">
                     <div className="image_container">
                         {options && options[`${option.id}`] && options[`${option.id}`].image ?
-                            <img className="default_avatar" src={options[`${option.id}`].image} />
+                            <img className="default_avatar" src={URL.createObjectURL(options[`${option.id}`].image)} />
                         :
                             <img className="default_avatar" src={Default} />
                         }

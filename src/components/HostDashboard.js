@@ -35,12 +35,18 @@ const HostDashboard = () => {
                 setRoomsByHost(res.data)
             }).catch(err=>console.log(err))
         }
-    },[currentUser])
+    },[currentUser,roomsByHost])
     console.log(roomsByHost)
     const customStyles = {
         content:{
             width:"25rem",height:"10rem",margin:"0 auto",textAlign:"center"
         }
+    }
+    const deleteRoom = (roomId) => {
+        const token = localStorage.getItem("authKey")
+        axios.post(`http://localhost:5000/rooms/delete/${roomId}`,{
+            headers:{Authorization:`Bearer ${token}`}
+        }).then(res=>console.log(res)).catch(err=>console.log(err))
     }
     return(
         <div className="dashboard">
@@ -74,13 +80,20 @@ const HostDashboard = () => {
                     <th className="dashboard_tabletitle">Actions</th>
                 </tr>
                 {roomsByHost && roomsByHost.map(room=>(
-                <tr className="dashboard_tablebody">
+                <tr key={room._id} className="dashboard_tablebody">
                     <td className="dashboard_tablecontent">{room.roomName}</td>
                     <td className="dashboard_tablecontent">{room.num_voters}/{room.voters_limit}</td>
                     <td className="dashboard_tablecontent">{room.endDateTime}</td>
                     <td className="dashboard_tablecontent">{room.winner ? room.winner : "-"}</td>
                     <td className="dashboard_tablecontent">
-                        
+                        <div className="table_actions_container">
+                            <div onClick={()=>window.location.replace(`http://localhost:3000/rooms/${room._id}`)} className="table_actions_btn">
+                                <p className="table_actions_btn_text">View</p>
+                            </div>
+                            <div onClick={()=>deleteRoom(room._id)} className="table_actions_btn">
+                                <p className="table_actions_btn_text">Delete</p>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 ))}

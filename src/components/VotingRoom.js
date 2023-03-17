@@ -59,6 +59,7 @@ const VotingRoom = (props) => {
             window.location.reload();
         }).catch(err=>console.error(err))
     }
+    console.log(participants)
     return (
         <div className="room_container">
             <p className="room_name">{roomName}</p>
@@ -90,7 +91,7 @@ const VotingRoom = (props) => {
                 <div className={selectedOptionData.id == option.id ? "option_container_after" : "option_container_before" }
                 key={option.id}>
                     <div className="option_image">
-                        <img className="option_avatar" src={option.avatar} />
+                        <img className="option_avatar" src={option.avatar}/>
                     </div>
                     <p 
                     className={selectedOptionData.id == option.id ? "option_name_after" : "option_name_before"}>{option.name}</p>
