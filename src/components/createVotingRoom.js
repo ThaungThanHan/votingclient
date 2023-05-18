@@ -1,4 +1,5 @@
 import React,{useEffect, useState} from "react";
+import QRCode from 'qrcode'
 import DatePicker from "react-datepicker";
 import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
@@ -6,10 +7,18 @@ import "react-datepicker/dist/react-datepicker.css";
 import Default from "../assets/images/default_avatar.png"
 import "../styles/createVotingRoom.scss";
 import {FaPlus} from "react-icons/fa";
+import Modal from 'react-modal';
+import {isNotEmpty} from "./functions/validations";
+import PulseLoader from "react-spinners/PulseLoader";
+
 
 const CreateVotingRoom = () => {
+    const [isAuthenticated,setIsAuthenticated] = useState(false)
+    const [hasError,setHasError] = useState(false);
+    const [confirmModal,setConfirmModal] = useState(false);
     const [numberOptions,setNumberOptions] = useState([{id:0}]);
     const [image,setImage] = useState(null);
+    const [qr,setQR] = useState("")
     const [options,setOptions] = useState({
         
     });
@@ -18,7 +27,7 @@ const CreateVotingRoom = () => {
     const [roomDesc,setRoomDesc] = useState("");
     const [numVoters,setNumVoters] = useState(0);
 
-    const [endDateTime,setEndDateTime] = useState();
+    const [endDateTime,setEndDateTime] = useState("");
 
     const handleAddOptions = () => {
         setNumberOptions(prevState=>[...prevState,{id:numberOptions[numberOptions.length-1].id+1}])
@@ -26,7 +35,9 @@ const CreateVotingRoom = () => {
     const handleRemoveOption = (id) => {
         const filteredRow = numberOptions.filter(element=> element.id !== id);
         setNumberOptions(filteredRow)
-        delete options[id]
+        const optionCopy = {...options};
+        delete optionCopy[id];
+        setOptions(optionCopy);
     }
     
     const onNameChange = (e) => {
@@ -58,17 +69,38 @@ const CreateVotingRoom = () => {
         }
     }
     useEffect(()=>{
-        if(options){
-            if(Object.keys(options).length > 0 && options[0].name && options[0].name !== ""){
-                setHasOptions(true)
-            }else{
+        if(localStorage.getItem("authKey") == ""){
+            setIsAuthenticated(false)
+        }else{
+            setIsAuthenticated(true)
+        }
+    },[localStorage.getItem("authKey")])
+    useEffect(()=>{
+        if(isNotEmpty(roomName) && isNotEmpty(roomDesc) && hasOptions && numVoters > 0 && endDateTime !== "" ){
+            setHasError(false)
+        }else{
+            setHasError(true)
+        }
+    },[roomName,roomDesc,numberOptions,numVoters,endDateTime,hasOptions])
+
+    useEffect(()=>{
+        console.log("OPTIONS " + Object.values(options).length)
+        if(Object.values(options).length > 1){
+            setHasOptions(true)
+        }else{
+            setHasOptions(false)
+        }
+        Object.values(options).forEach(opt=>{
+            if(opt.name == ""){
                 setHasOptions(false)
             }
-        }
+        })
     },[options])
-
+    console.log("Has " + hasOptions)
     const handleCreateRoom = async() => {
         const roomId = uuidv4().slice(0,6);
+        QRCode.toDataURL(`http://localhost:3000/rooms/${roomId}`)
+        .then(url => {
         const participants = Object.values(options);
         const participantsData = [];
         const participantsImages = [];
@@ -86,6 +118,7 @@ const CreateVotingRoom = () => {
             "_id":roomId,
             "roomName":roomName,
             "roomDesc":roomDesc,
+            "roomQR":url,
             "currentUserId":currentUserId,
             "endDateTime":endDateTime,
             "participants":JSON.stringify(participantsData),
@@ -101,17 +134,44 @@ const CreateVotingRoom = () => {
             formData.append("files",img)
         })
         
-        console.log(formData)
+        // for (var [key, value] of formData.entries()) {  //FORMDATA is not empty.
+        //     console.log(key, value);
+        // }
         const token = localStorage.getItem("authKey")
-        await axios.post("http://localhost:5000/rooms",formData,{
+        axios.post("http://localhost:5000/rooms",formData,{
             headers:{"Content-Type": "multipart/form-data"}
         }).then(res=>console.log(res)).catch(err=>console.log(err));
+        })
+        .catch(err => {
+          console.error(err)
+        });
+
     }   
 
     if(options){
         console.log(options)
     }
+
+    const customStyles = {
+        content:{
+            width:"10rem",height:"6rem",margin:"0 auto",marginTop:"2rem",textAlign:"center"
+        }
+    }
     return (
+        <div>
+        <div>
+        
+        <Modal iaHideApp={false} isOpen={confirmModal} style={customStyles}>
+            <p style={{marginBottom:".2rem"}}>Are you sure you want to create room?</p>
+            <div className="confirm_buttons_container">
+                <div onClick={()=>setConfirmModal(false)} className="confirm_no">
+                    <p>No</p>
+                </div>
+                <div onClick={()=>handleCreateRoom()} className="confirm_yes">
+                    <p>Yes</p>
+                </div>
+            </div>
+        </Modal>
         <div className="roomcreation_container">
             <h2 className="roomcreation_header">Create your voting room</h2>
             <div className="room_form_container">
@@ -132,14 +192,14 @@ const CreateVotingRoom = () => {
                 </div>
                 <div className="room_description">
                     <div className="form_title">
-                        {roomName == "" ? <span className="form_tick_before" /> : <span className="form_tick_after" /> }
+                        {numVoters == "" || numVoters <= 0 ? <span className="form_tick_before" /> : <span className="form_tick_after" /> }
                         <p>Voters limit</p>
                     </div>
                     <input type="number" onChange={(e)=>setNumVoters(e.target.value)} className="roomForm_input" />
                 </div>
                 <div className="room_description">
                     <div className="form_title">
-                    {roomDesc == "" ? <span className="form_tick_before" /> : <span className="form_tick_after" /> }
+                    {endDateTime == "" ? <span className="form_tick_before" /> : <span className="form_tick_after" /> }
                         <p>Voting end date</p>
                     </div>
                     <div className="form_datetime">
@@ -175,12 +235,15 @@ const CreateVotingRoom = () => {
                     <FaPlus size={18} />
                 </div>
                 <div className="optionsForm_btnContainer">
-                    <div onClick={()=>handleCreateRoom()} className="optionsForm_createBtn">
+                    <div onClick={!hasError ? ()=>setConfirmModal(true) : null}
+                     className={hasError ? "optionsForm_createBtn_disabled" : "optionsForm_createBtn"}>
                         <p>Create room</p>
                     </div>
                 </div>
                 </div>
             </div> 
+        </div>
+        </div>
         </div>
     )
 }

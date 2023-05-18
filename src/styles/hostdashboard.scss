@@ -26,10 +26,11 @@
 }
 .dahsboard_navbar{
     border-bottom:1px solid #eee;max-width:100%;height:3rem;background-color: white;display:flex;flex-direction: row;
-    justify-content: space-between;padding-right:4rem;padding-left:4rem;padding-top:1rem;
+    justify-content: space-around;padding-top:1rem;align-items: center;
+    padding-bottom: 1rem;   
 }
 .dashboard_tablebody{
-    width:100%;height:2rem;border:1px solid red;
+    width:100%;height:2rem;
 }
 .dashboard_tablecontent{
     width:20rem;height:2rem;border-bottom:1px solid #eee;text-align: center;font-size:.6rem;
@@ -41,6 +42,13 @@
     font-size:1.2rem;cursor:pointer;
     &:hover{
         color:$primaryColor;font-weight:bold
+    }
+}
+.dashboard_btn{
+    border:1px solid #eee;width:auto;height:2rem;padding:.5rem;display:flex;align-items: center;
+    border-radius:.5rem;background-color: $primaryColor;color:black;cursor:pointer;margin-right:1rem;
+    &:hover{
+        color: white;
     }
 }
 .table_actions_container{

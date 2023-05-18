@@ -4,7 +4,6 @@ import "../styles/_homepage.scss";
 import "../styles/App.scss";
 const Homepage = () => {
     const [roomId,setRoomId] = useState("");
-
     return (
         <div className="homepageContainer">
                 <h1 className="homepageEntry_logo">Voting App</h1>

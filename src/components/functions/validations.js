@@ -18,3 +18,11 @@ export const isEmail = (value1) => {
 
     return regex.test(value1)
 }
+
+export const isNotEmpty = (value1) => {
+    if(value1 !== "" && value1 !== null){
+        return true
+    }else{
+        return false;
+    }
+}

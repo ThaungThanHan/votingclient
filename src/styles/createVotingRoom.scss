@@ -1,6 +1,8 @@
+@import "styles";
+
 .roomcreation_container{
-    border:1px solid blue;align-items: center;justify-content: center;display:flex;flex-direction: column;
-    width:auto
+   align-items: center;justify-content: center;display:flex;flex-direction: column;
+    width:auto;background-color: white;width:20rem;padding:0 1rem;
 }
 .room_form_container{
     display:flex;flex-direction: column;width:100%;max-width:100%;
@@ -22,10 +24,10 @@
     border:1px solid #eee;width:0.5rem;height:0.5rem;background-color: green;border-radius: 50%;margin-right:.5rem;
 }
 .roomForm_input{
-    border:1px solid #eee;border-radius: .5rem;min-height:1.5rem;max-height:10rem;margin-top:.5rem;max-width:29rem;min-width:29rem;
+    border:1px solid #eee;border-radius: .5rem;min-height:1.5rem;max-height:10rem;margin-top:.5rem;max-width:19rem;min-width:19rem;
     margin-bottom:1.5rem;padding:.5rem;
     &:focus{
-        outline:none;
+            outline:none;border-color:$primaryColor;border-width:2px;
     }
 }
 .form_datetime{
@@ -43,13 +45,14 @@
 }
 
 .form_options{
-    display:flex;flex-direction: row;align-items: center;margin-top:1rem;justify-content: space-between;width:100%
+    display:flex;flex-direction: row;align-items: center;margin-top:1rem;justify-content: space-between;width:100%;
+    align-items:'center'
 }
 // .options_image{
 //     width:5rem;height:5rem;cursor:pointer;
 // }
 .default_avatar{
-    border-radius:5px;width:5rem;height:5rem
+    border-radius:5px;width:5rem;height:5rem;margin-bottom: .2rem;
 }
 .avatar_picker{
     display:block
@@ -68,13 +71,30 @@
 }
 .plus_options{
     border:1px solid black;width:1.5rem;height:1.5rem;border-radius: 50%;display:flex;align-items: center;justify-content: center;
-    margin-left:27rem;cursor:pointer
+    position:absolute;cursor:pointer;margin-left:18rem;
 }
 
 .optionsForm_btnContainer{
     height:5rem;display:flex;justify-content: center;align-items: center;
 }
 .optionsForm_createBtn{
-    display:flex;justify-content: center;align-items: center;border:1px solid black;width:10rem;height:2rem;
-    border-radius: 5px;cursor:pointer
+    display:flex;justify-content: center;align-items: center;border:1px solid #eee;width:10rem;height:2rem;
+    border-radius: 5px;cursor:pointer;transition:all .3s;
+    &:hover{
+        background-color: $primaryColor;color:white
+    }
+}
+.optionsForm_createBtn_disabled{
+    opacity:40%;cursor:pointer
+}
+.confirm_buttons_container{
+    display:flex;flex-direction: row;justify-content: space-between;
+}
+.confirm_no{
+    border:1px solid #eee;width:4rem;height:2rem;display:flex;align-items: center;justify-content: center;background-color: red;
+    color:white;cursor:pointer;
+}
+.confirm_yes{
+    border:1px solid #eee;width:4rem;height:2rem;display:flex;align-items: center;justify-content: center;background-color: $primaryColor;
+    color:white;cursor:pointer;
 }

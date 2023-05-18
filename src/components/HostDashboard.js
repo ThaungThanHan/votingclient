@@ -56,6 +56,9 @@ const HostDashboard = () => {
             <p className="dashboard_username">
                 Hello, {currentUser ? currentUser.username : null}
             </p>
+            <div onClick={()=>window.location.replace("/createroom")} className="dashboard_btn">
+                <p className="dashboard_btn_text">Create Voting Room</p>
+            </div>
             <p onClick={()=>onLogout()} className="dashboard_logout">
                 Logout
             </p>
