@@ -13,6 +13,7 @@ import PulseLoader from "react-spinners/PulseLoader";
 
 
 const CreateVotingRoom = () => {
+    const [isLoading,setIsLoading] = useState(false);
     const [isAuthenticated,setIsAuthenticated] = useState(false)
     const [hasError,setHasError] = useState(false);
     const [confirmModal,setConfirmModal] = useState(false);
@@ -98,6 +99,7 @@ const CreateVotingRoom = () => {
     },[options])
     console.log("Has " + hasOptions)
     const handleCreateRoom = async() => {
+        setIsLoading(true);
         const roomId = uuidv4().slice(0,6);
         QRCode.toDataURL(`http://localhost:3000/rooms/${roomId}`)
         .then(url => {
@@ -140,7 +142,10 @@ const CreateVotingRoom = () => {
         const token = localStorage.getItem("authKey")
         axios.post("http://localhost:5000/rooms",formData,{
             headers:{"Content-Type": "multipart/form-data"}
-        }).then(res=>console.log(res)).catch(err=>console.log(err));
+        }).then(res=>{
+            setIsLoading(false);
+            window.location.replace(`http://localhost:3000/rooms/${roomId}`)
+        }).catch(err=>console.log(err));
         })
         .catch(err => {
           console.error(err)
@@ -161,8 +166,9 @@ const CreateVotingRoom = () => {
         <div>
         <div>
         
-        <Modal iaHideApp={false} isOpen={confirmModal} style={customStyles}>
-            <p style={{marginBottom:".2rem"}}>Are you sure you want to create room?</p>
+        <Modal ariaHideApp={false} isOpen={confirmModal} style={customStyles}>
+            <p style={{marginBottom:".5rem"}}>Are you sure you want to create room?</p>
+            {!isLoading ?
             <div className="confirm_buttons_container">
                 <div onClick={()=>setConfirmModal(false)} className="confirm_no">
                     <p>No</p>
@@ -170,7 +176,15 @@ const CreateVotingRoom = () => {
                 <div onClick={()=>handleCreateRoom()} className="confirm_yes">
                     <p>Yes</p>
                 </div>
-            </div>
+            </div> :
+            <PulseLoader
+            color="#1ab252"
+            loading={isLoading}
+            size={30}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+            />
+            }
         </Modal>
         <div className="roomcreation_container">
             <h2 className="roomcreation_header">Create your voting room</h2>

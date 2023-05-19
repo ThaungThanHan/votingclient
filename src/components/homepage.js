@@ -1,9 +1,17 @@
-import React, {useState} from "react";
+import React, {useState,useEffect} from "react";
 import {Link} from "react-router-dom";
 import "../styles/_homepage.scss";
 import "../styles/App.scss";
 const Homepage = () => {
     const [roomId,setRoomId] = useState("");
+    const [isAuthenticated,setIsAuthenticated] = useState(false);
+    useEffect(()=>{
+        if(localStorage.getItem("authKey") == ""){
+            setIsAuthenticated(false)
+        }else{
+            setIsAuthenticated(true)
+        }
+    },[localStorage.getItem("authKey")])
     return (
         <div className="homepageContainer">
                 <h1 className="homepageEntry_logo">Voting App</h1>
@@ -13,7 +21,8 @@ const Homepage = () => {
                 <div className="Search_btn">
                     <p className="Search_btn_text">ENTER</p>
                 </div></Link>
-                <Link style={{textDecoration:"none"}} to="/signup">
+                <Link style={{textDecoration:"none"}} 
+                to={isAuthenticated ? "/createroom" : "/signup"}>
                     <div className="Search_btn">
                         <p className="Search_btn_text">CREATE A VOTING ROOM</p>
                     </div>
