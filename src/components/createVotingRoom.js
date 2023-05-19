@@ -13,6 +13,7 @@ import PulseLoader from "react-spinners/PulseLoader";
 
 
 const CreateVotingRoom = () => {
+    const dateNow = new Date();
     const [isLoading,setIsLoading] = useState(false);
     const [isAuthenticated,setIsAuthenticated] = useState(false)
     const [hasError,setHasError] = useState(false);
@@ -77,13 +78,17 @@ const CreateVotingRoom = () => {
         }
     },[localStorage.getItem("authKey")])
     useEffect(()=>{
-        if(isNotEmpty(roomName) && isNotEmpty(roomDesc) && hasOptions && numVoters > 0 && endDateTime !== "" ){
+        if(isNotEmpty(roomName) && isNotEmpty(roomDesc) && hasOptions && numVoters > 0 && endDateTime !== "" && endDateTime > dateNow){
             setHasError(false)
         }else{
             setHasError(true)
         }
     },[roomName,roomDesc,numberOptions,numVoters,endDateTime,hasOptions])
-
+    // useEffect(()=>{
+    //     if(endDateTime > dateNow){
+    //         console.log("FUCK")
+    //     }
+    // },[endDateTime])
     useEffect(()=>{
         console.log("OPTIONS " + Object.values(options).length)
         if(Object.values(options).length > 1){
@@ -213,12 +218,12 @@ const CreateVotingRoom = () => {
                 </div>
                 <div className="room_description">
                     <div className="form_title">
-                    {endDateTime == "" ? <span className="form_tick_before" /> : <span className="form_tick_after" /> }
+                    {endDateTime == "" || endDateTime < dateNow ? <span className="form_tick_before" /> : <span className="form_tick_after" /> }
                         <p>Voting end date</p>
                     </div>
                     <div className="form_datetime">
                         <DatePicker timeInputLabel="Time:" dateFormat="MM/dd/yyyy h:mm aa" placeholderText="Select due date and time"
-                        showTimeInput className="form_date_picker" selected={endDateTime} onChange={date=>setEndDateTime(date)} />
+                        minDate={dateNow} minTime={dateNow.getTime()} maxTime="2084506413113" showTimeSelect className="form_date_picker" selected={endDateTime} onChange={date=>setEndDateTime(date)} />
                     </div>
                 </div>
                 <div className="room_description">

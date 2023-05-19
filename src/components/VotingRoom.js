@@ -3,11 +3,15 @@ import {useParams} from "react-router-dom";
 import axios from "axios";
 import {AiOutlineCheck, AiFillCrown,AiOutlineInfo,AiFillCloseCircle} from "react-icons/ai"
 import Modal from 'react-modal';
+import PulseLoader from "react-spinners/PulseLoader";
 
 import "../styles/VotingRoom.scss"
 const VotingRoom = (props) => {
     const [authenticated,setIsAuthenticated] = useState(false);
     const [optionsModal,setOptionsModal] = useState(false);
+    const [confirmModal,setConfirmModal] = useState(false);
+    const [isLoading,setIsLoading] = useState(false);
+    const [clipBoardText,setClipBoardText] = useState("Copy link to clipboard");
     const {id} = useParams()
     const [roomData,setRoomData] = useState({});
     const [selectedOptionData,setSelectedOptionData] = useState({});
@@ -57,6 +61,7 @@ const VotingRoom = (props) => {
         setSelectedOptionData(option)
     }
     const onVoteOption = () => {
+        setIsLoading(true);
         const optionData = {
             "id":selectedOptionData.id,
             "votes":selectedOptionData.votes,
@@ -65,11 +70,17 @@ const VotingRoom = (props) => {
         axios.patch(`http://localhost:5000/rooms/${id}`,optionData).then(res=>{
             console.log(`you have voted for ${selectedOptionData.name}`);
             window.location.reload();
+            setIsLoading(false);
         }).catch(err=>console.error(err))
     }
     const customStyles = {
         content:{
             width:"15rem",height:"20rem",margin:"0 auto",marginTop:"2rem"
+        }
+    }
+    const confirmModalStyles = {
+        content:{
+            width:"10rem",height:"6rem",margin:"0 auto",marginTop:"2rem",textAlign:"center"
         }
     }
     const handleDeleteRoom = (id) => {
@@ -81,13 +92,22 @@ const VotingRoom = (props) => {
             console.error(err);
         })
     }
+    const onClickClipboard = () => {
+        navigator.clipboard.writeText(`http://localhost:3000/rooms/${roomData._id}`);
+        setClipBoardText("Link Copied!")
+    }
     return (
         <>
         <Modal isOpen={optionsModal} style={customStyles}>
-            <AiFillCloseCircle onClick={()=>setOptionsModal(false)} className="modal_close_btn" />
+            <AiFillCloseCircle 
+            onClick={()=>{setOptionsModal(false);setClipBoardText("Copy link to clipboard")}} className="modal_close_btn" />
             <div className="qr_container">
                 <div className="QR">
                     <img src={roomData.roomQR} style={{width:"100%",height:"100%"}}/>
+                </div>
+                <div onClick={()=>onClickClipboard()} 
+                className="clipboard_container">
+                    <p>{clipBoardText}</p>
                 </div>
             </div>
             <div className="admin_container">
@@ -105,6 +125,26 @@ const VotingRoom = (props) => {
             </div> : null}
             <div>
             </div>
+        </Modal>
+        <Modal ariaHideApp={false} isOpen={confirmModal} style={confirmModalStyles}>
+            <p style={{marginBottom:".5rem"}}>Are you sure you want to vote {selectedOptionData.name} ?</p>
+            {!isLoading ?
+            <div className="confirm_buttons_container">
+                <div onClick={()=>setConfirmModal(false)} className="confirm_no">
+                    <p>No</p>
+                </div>
+                <div onClick={()=>onVoteOption()} className="confirm_yes">
+                    <p>Yes</p>
+                </div>
+            </div> :
+            <PulseLoader
+            color="#1ab252"
+            loading={isLoading}
+            size={30}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+            />
+            }
         </Modal>
         <div className="room_container">
             <div onClick={()=>setOptionsModal(true)} style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
@@ -151,7 +191,7 @@ const VotingRoom = (props) => {
                 </div>
             ))}
             </div>
-            <div onClick={roomData.num_voters !== roomData.voters_limit && !authenticated ? ()=>onVoteOption() : null} 
+            <div onClick={roomData.num_voters !== roomData.voters_limit && !authenticated ? ()=>setConfirmModal(true) : null} 
             className={(roomData.num_voters !== roomData.voters_limit) && !authenticated ? "voting_btn" : "voting_btn_disabled"}>
                 <p className="voting_btn_text">Vote!</p>
             </div>

@@ -91,10 +91,16 @@
     display:flex;flex-direction: row;justify-content: space-between;
 }
 .confirm_no{
-    border:1px solid #eee;width:4rem;height:2rem;display:flex;align-items: center;justify-content: center;background-color: red;
+    border:1px solid #eee;width:4rem;height:2rem;display:flex;align-items: center;justify-content: center;background-color: $primaryRed;
     color:white;cursor:pointer;
+    &:hover{
+        background-color:$secondaryRed;
+    }
 }
 .confirm_yes{
     border:1px solid #eee;width:4rem;height:2rem;display:flex;align-items: center;justify-content: center;background-color: $primaryColor;
     color:white;cursor:pointer;
+    &:hover{
+        background-color:$secondaryColor;
+    }
 }

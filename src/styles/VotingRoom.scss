@@ -54,13 +54,11 @@ width:15rem;height:auto; margin-bottom:2rem;margin-top: 2rem;text-align: center;
     color:black;
 }
 .voting_btn{
-    border:1px solid black;width:4rem;height:2rem;justify-content: center;align-items: center;display:flex;
-    margin-top:2rem;cursor:pointer;margin-bottom:2rem;transition:all .2s;margin:0 auto;
+    width:4rem;height:2rem;justify-content: center;align-items: center;display:flex;
+    margin-top:2rem;cursor:pointer;margin-bottom:2rem;transition:all .2s;margin:0 auto;color:white;
+    background-color: $primaryColor;
     &:hover{
-        background-color: $primaryColor;
-        .voting_btn_text{
-            color:white;
-        }
+        background-color: $secondaryColor;
     }
 }
 .voting_btn_disabled{
@@ -91,26 +89,30 @@ width:15rem;height:auto; margin-bottom:2rem;margin-top: 2rem;text-align: center;
     width:100%;height:100%
 }
 .room_info_container{
-    border:2px solid #eee;width:1.5rem;height:1.5rem;border-radius: 50%;display:flex;align-items: center;justify-content: center;
+    background-color:$primaryColor;color:white;
+    width:1.5rem;height:1.5rem;border-radius: 50%;display:flex;align-items: center;justify-content: center;
     position:absolute;margin-left:10rem;margin-top:1.5rem;cursor:pointer;
     &:hover{
-        background-color: $primaryColor;color:white
+        background-color: $secondaryColor;
     }
 }
 .qr_container{
-    width:100%;height:5rem;display:flex;justify-content: center;
+    width:100%;height:auto;display:flex;flex-direction: column;
 }
 .QR{
-    width:6rem;height:6rem;
+    width:15rem;height:14rem;
 }
 .admin_container{
-    width:100%;height:auto;margin-top:1rem;
+    width:100%;height:auto;margin-top:rem;
 }
 .host_container{
     display:flex;flex-direction: row;justify-content: space-between;
 }
 .modal_close_btn{
     position: absolute;width:1.5rem;height:2rem;top:0;right:.1rem;color:$primaryColor;cursor:pointer;
+    &:hover{
+        color: $secondaryColor;
+    }
 }
 .admin_delete{
     width:4rem;height:2rem;display:flex;justify-content: center;align-items: center;margin:0 auto;
@@ -120,5 +122,13 @@ width:15rem;height:auto; margin-bottom:2rem;margin-top: 2rem;text-align: center;
     };
     &_text{
         color:white;font-weight: bold;
+    }
+}
+.clipboard_container{
+    width:15rem;height:2rem;border:1px solid #eee;display:flex;align-items: center;
+    justify-content: center;background-color: $primaryColor;color:white;cursor:pointer;
+    border-radius:20rem;
+    &:hover{
+        background-color: $secondaryColor;
     }
 }
