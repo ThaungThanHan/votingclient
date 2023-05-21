@@ -84,11 +84,6 @@ const CreateVotingRoom = () => {
             setHasError(true)
         }
     },[roomName,roomDesc,numberOptions,numVoters,endDateTime,hasOptions])
-    // useEffect(()=>{
-    //     if(endDateTime > dateNow){
-    //         console.log("FUCK")
-    //     }
-    // },[endDateTime])
     useEffect(()=>{
         console.log("OPTIONS " + Object.values(options).length)
         if(Object.values(options).length > 1){

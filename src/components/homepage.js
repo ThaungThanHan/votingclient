@@ -6,11 +6,12 @@ const Homepage = () => {
     const [roomId,setRoomId] = useState("");
     const [isAuthenticated,setIsAuthenticated] = useState(false);
     useEffect(()=>{
-        if(localStorage.getItem("authKey") == ""){
-            setIsAuthenticated(false)
+        if(localStorage.getItem("authKey") && localStorage.getItem("authKey") !== ""){
+            setIsAuthenticated(true)
         }else{
             setIsAuthenticated(true)
         }
+        console.log("AUTH " + isAuthenticated)
     },[localStorage.getItem("authKey")])
     return (
         <div className="homepageContainer">
@@ -22,7 +23,7 @@ const Homepage = () => {
                     <p className="Search_btn_text">ENTER</p>
                 </div></Link>
                 <Link style={{textDecoration:"none"}} 
-                to={isAuthenticated ? "/createroom" : "/signup"}>
+                to={isAuthenticated ? "/createroom" : "/login"}>
                     <div className="Search_btn">
                         <p className="Search_btn_text">CREATE A VOTING ROOM</p>
                     </div>

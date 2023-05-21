@@ -8,12 +8,20 @@
 .dashboard_sidebar{
     width:100%;height:5rem;display:flex;
 }
+
 .dashboard_item{
-    border-left:none;border-right:1px solid black;border-bottom: 1px solid black;font-size:.9rem;
+    border-left:none;border-right:1px solid black;border-bottom: 1px solid black;font-size:1.2rem;
     width:100%;padding:.5rem;justify-content: center;align-items: center;display:flex;cursor:pointer;
+    transition:all .5s;
     &:hover{
-        background-color: white;.dashboard_item_text{color:$primaryColor};border-bottom:none;
+        background-color: $secondaryColor;
+        .dashboard_item_text{color:white};border-bottom:none;
     }
+}
+.dashboard_item_selected{
+    border-left:none;border-right:1px solid black;font-size:1.2rem;
+    width:100%;padding:.5rem;justify-content: center;align-items: center;display:flex;cursor:pointer;
+    background-color: white;
 }
 .dashboard_table{
     width:100%;height:auto;background-color: white;
@@ -33,13 +41,13 @@
     width:100%;height:2rem;
 }
 .dashboard_tablecontent{
-    width:20rem;height:2rem;border-bottom:1px solid #eee;text-align: center;font-size:.6rem;
+    width:20rem;height:2rem;border-bottom:1px solid #eee;text-align: center;font-size:1rem;
 }
 .dashboard_username{
     font-size:1.2rem;
 }
 .dashboard_logout{
-    font-size:1.2rem;cursor:pointer;
+    font-size:1.2rem;cursor:pointer;transition:all .5s;
     &:hover{
         color:$primaryColor;font-weight:bold
     }
@@ -47,6 +55,7 @@
 .dashboard_btn{
     border:1px solid #eee;width:auto;height:2rem;padding:.5rem;display:flex;align-items: center;
     border-radius:.5rem;background-color: $primaryColor;color:black;cursor:pointer;margin-right:1rem;
+    transition:all .5s;
     &:hover{
         color: white;
     }
@@ -56,8 +65,19 @@
 }
 .table_actions_btn{
     border:1px solid black;width:4rem;height:2rem;display:flex;align-items: center;justify-content: center;cursor:pointer;
+    transition:all .5s;
     &:hover{
         background-color: $primaryColor;border:1px solid #eee;
+        .table_actions_btn_text{
+            color:white
+        }
+    }
+}
+.table_actions_btn_delete{
+    border:1px solid black;width:4rem;height:2rem;display:flex;align-items: center;justify-content: center;cursor:pointer;
+    transition:all .5s;
+    &:hover{
+        background-color: $primaryRed;border:1px solid #eee;
         .table_actions_btn_text{
             color:white
         }

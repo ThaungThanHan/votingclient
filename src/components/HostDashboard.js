@@ -6,6 +6,7 @@ import "../styles/signup.scss"
 
 const HostDashboard = () => {
     const[isAuthenticated,setIsAuthenticated] = useState(false);
+    const [currentNav,setCurrentNav] = useState("All Rooms")
     const [roomsByHost,setRoomsByHost] = useState([])
     const [currentUser,setCurrentUser] = useState({});
     const [logoutModal,setLogoutModal] = useState(false);
@@ -64,14 +65,13 @@ const HostDashboard = () => {
             </p>
         </div>
         <div className="dashboard_sidebar">
-            <div className="dashboard_item">   
+            <div onClick={()=>setCurrentNav("All Rooms")}
+            className={currentNav == "All Rooms" ? "dashboard_item_selected" :"dashboard_item"}>   
                 <p className="dashboard_item_text">All rooms</p>
             </div>
-            <div className="dashboard_item">
-                <p className="dashboard_item_text">Completed</p>
-            </div>
-            <div className="dashboard_item">
-                <p className="dashboard_item_text">Deleted</p>
+            <div onClick={()=>setCurrentNav("Completed")}
+            className={currentNav == "Completed" ? "dashboard_item_selected" :"dashboard_item"}>   
+            <p className="dashboard_item_text">Completed</p>
             </div>
         </div>
         <table className="dashboard_table">
@@ -82,23 +82,45 @@ const HostDashboard = () => {
                     <th className="dashboard_tabletitle">Winner</th>
                     <th className="dashboard_tabletitle">Actions</th>
                 </tr>
-                {roomsByHost && roomsByHost.map(room=>(
+                {currentNav == "All Rooms" && roomsByHost && roomsByHost.map(room=>(
                 <tr key={room._id} className="dashboard_tablebody">
                     <td className="dashboard_tablecontent">{room.roomName}</td>
                     <td className="dashboard_tablecontent">{room.num_voters}/{room.voters_limit}</td>
-                    <td className="dashboard_tablecontent">{room.endDateTime}</td>
-                    <td className="dashboard_tablecontent">{room.winner ? room.winner : "-"}</td>
+                    <td className="dashboard_tablecontent">{Date.parse(room.endDateTime)}</td>
+                    <td className="dashboard_tablecontent">{room.winner ? room.winner.name : "-"}</td>
                     <td className="dashboard_tablecontent">
                         <div className="table_actions_container">
                             <div onClick={()=>window.location.replace(`http://localhost:3000/rooms/${room._id}`)} className="table_actions_btn">
                                 <p className="table_actions_btn_text">View</p>
                             </div>
-                            <div onClick={()=>deleteRoom(room._id)} className="table_actions_btn">
+                            <div onClick={()=>deleteRoom(room._id)} className="table_actions_btn_delete">
                                 <p className="table_actions_btn_text">Delete</p>
                             </div>
                         </div>
                     </td>
                 </tr>
+                ))}
+
+                {currentNav == "Completed" && roomsByHost && roomsByHost.map(room=>(
+                room.winner ?
+                    <tr key={room._id} className="dashboard_tablebody">
+                    <td className="dashboard_tablecontent">{room.roomName}</td>
+                    <td className="dashboard_tablecontent">{room.num_voters}/{room.voters_limit}</td>
+                    <td className="dashboard_tablecontent">{room.endDateTime}</td>
+                    <td className="dashboard_tablecontent">{room.winner ? room.winner.name : "-"}</td>
+                    <td className="dashboard_tablecontent">
+                        <div className="table_actions_container">
+                            <div onClick={()=>window.location.replace(`http://localhost:3000/rooms/${room._id}`)} className="table_actions_btn">
+                                <p className="table_actions_btn_text">View</p>
+                            </div>
+                            <div onClick={()=>deleteRoom(room._id)} className="table_actions_btn_delete">
+                                <p className="table_actions_btn_text">Delete</p>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                :
+                null
                 ))}
 
         </table>
