@@ -8,13 +8,15 @@ import { v4 as uuidv4 } from 'uuid';
 const SignUp = () => {
     const [isAuthenticated,setIsAuthenticated] = useState(false);
     useEffect(()=>{
-        const authToken = localStorage.getItem("authKey");
-        if(!authToken){
-            setIsAuthenticated(false)
+        const userToken = localStorage.getItem("authKey");
+        if(userToken){
+            axios.get(`http://localhost:5000/verifyUser`,{
+                headers:{Authorization:`Bearer ${userToken}`}
+            }).then(res=>setIsAuthenticated(true)).catch(err=>setIsAuthenticated(false));
         }else{
-            setIsAuthenticated(true)
+            setIsAuthenticated(false);
         }
-    },[])
+    },[localStorage.getItem("authKey")])
     const [signupForm,setSignUpForm] = useState({
         "username":"",
         "email":"",
@@ -63,7 +65,7 @@ const SignUp = () => {
             </div>        
         :
         <div className="signup_container">
-            <p>Create an account</p>
+            <p className="login_title">Create an account</p>
             <form onSubmit={(e)=>onSubmitSignUp(e)} className="form_container">
                 <Modal isOpen={formModal} style={customStyles}>
                     {successMes !== "" ? 
@@ -89,7 +91,7 @@ const SignUp = () => {
                     <label className="form_label">Email</label>
                     <input required value={signupForm.email}
                     onChange={(e)=>setSignUpForm({...signupForm,email:e.target.value})} placeholder="Enter your email address" className="form_input" />
-                    {!isEmail(signupForm.email) ? <span className="error_message">* Invalid email address.</span> :
+                    {!isEmail(signupForm.email) ? <span className="error_message">* Please enter correct email address.</span> :
                     null}
                 </div>
                 <div className="input_container">

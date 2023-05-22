@@ -13,13 +13,15 @@ const Login = () => {
     const [successMes,setSuccessMes] = useState("");
     const [errMes,setErrMes] = useState("")
     useEffect(()=>{
-        const authToken = localStorage.getItem("authKey");
-        if(!authToken){
-            setIsAuthenticated(false)
+        const userToken = localStorage.getItem("authKey");
+        if(userToken){
+            axios.get(`http://localhost:5000/verifyUser`,{
+                headers:{Authorization:`Bearer ${userToken}`}
+            }).then(res=>setIsAuthenticated(true)).catch(err=>setIsAuthenticated(false));
         }else{
-            setIsAuthenticated(true)
+            setIsAuthenticated(false);
         }
-    },[])
+    },[localStorage.getItem("authKey")])
     const onLogInUser = (e) => {
         e.preventDefault();
         axios.post("http://localhost:5000/login",loginForm).then(res=>{
@@ -69,7 +71,7 @@ const Login = () => {
                 </>
                 : null}
             </Modal>
-            <p>Log In</p>
+            <p className="login_title">LOGIN</p>
             <form onSubmit={(e)=>onLogInUser(e)} className="form_container">
                 <div className="input_container">
                     <label className="form_label">Username</label>

@@ -16,11 +16,13 @@ const HostDashboard = () => {
         setLogoutModal(true);
     }
     useEffect(()=>{
-        const authToken = localStorage.getItem("authKey");
-        if(!authToken){
-            setIsAuthenticated(false)
+        const userToken = localStorage.getItem("authKey");
+        if(userToken){
+            axios.get(`http://localhost:5000/verifyUser`,{
+                headers:{Authorization:`Bearer ${userToken}`}
+            }).then(res=>setIsAuthenticated(true)).catch(err=>setIsAuthenticated(false));
         }else{
-            setIsAuthenticated(true)
+            setIsAuthenticated(false);
         }
         axios.post(`http://localhost:5000/users/${localStorage.getItem('currentUser')}`).then(res=>{
             setCurrentUser(res.data)

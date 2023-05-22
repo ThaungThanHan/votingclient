@@ -71,11 +71,15 @@ const CreateVotingRoom = () => {
         }
     }
     useEffect(()=>{
-        if(localStorage.getItem("authKey") == ""){
-            setIsAuthenticated(false)
+        const userToken = localStorage.getItem("authKey");
+        if(userToken){
+            axios.get(`http://localhost:5000/verifyUser`,{
+                headers:{Authorization:`Bearer ${userToken}`}
+            }).then(res=>setIsAuthenticated(true)).catch(err=>setIsAuthenticated(false));
         }else{
-            setIsAuthenticated(true)
+            setIsAuthenticated(false);
         }
+        console.log("AUTH " + isAuthenticated)
     },[localStorage.getItem("authKey")])
     useEffect(()=>{
         if(isNotEmpty(roomName) && isNotEmpty(roomDesc) && hasOptions && numVoters > 0 && endDateTime !== "" && endDateTime > dateNow){
@@ -164,8 +168,9 @@ const CreateVotingRoom = () => {
     }
     return (
         <div>
-        <div>
+        {isAuthenticated ?
         
+        <div>
         <Modal ariaHideApp={false} isOpen={confirmModal} style={customStyles}>
             <p style={{marginBottom:".5rem"}}>Are you sure you want to create room?</p>
             {!isLoading ?
@@ -258,6 +263,12 @@ const CreateVotingRoom = () => {
             </div> 
         </div>
         </div>
+        : 
+        <div className="error_container">
+        <p className="error_container_text">You are not logged in.</p>
+        <div onClick={()=>window.location.replace('/login')} className="error_container_btn"><p className="error_container_btn_text">Log In</p></div>
+        </div>
+        }
         </div>
     )
 }

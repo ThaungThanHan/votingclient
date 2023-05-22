@@ -23,18 +23,20 @@ const VotingRoom = (props) => {
     });
     const dateNow = Date.now();
     useEffect(()=>{
-        const authkey = localStorage.getItem("authKey");
-        if(authkey){
-            setIsAuthenticated(true)
+        const userToken = localStorage.getItem("authKey");
+        if(userToken){
+            axios.get(`http://localhost:5000/verifyUser`,{
+                headers:{Authorization:`Bearer ${userToken}`}
+            }).then(res=>setIsAuthenticated(true)).catch(err=>setIsAuthenticated(false));
         }else{
-            setIsAuthenticated(false)
+            setIsAuthenticated(false);
         }
         axios.get(`http://localhost:5000/rooms/${id}`).then(res=>{
             setRoomData(res.data)
         }).catch(err=>{
             console.error(err)
         })
-    },[roomData]);
+    },[localStorage.getItem("authKey"),roomData]);
     useEffect(()=>{
         const currentTime = new Date(); //"March 14 2023 21:00:00"
         const monthNames = ["January", "February", "March", "April", "May", "June",

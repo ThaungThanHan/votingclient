@@ -1,5 +1,8 @@
 @import "styles";
-
+.logo_container{
+    width:15rem;height:15rem;position:absolute;padding-top:2rem;
+    margin-top:-28rem;
+}
 .homepageContainer{
     padding-top:8rem;display:flex;flex-direction: column;align-items: center;
     width:18rem;height:100%;justify-content: center;background-color: $primaryColor;
