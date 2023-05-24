@@ -90,8 +90,16 @@ width:15rem;height:auto; margin-bottom:2rem;margin-top: 2rem;text-align: center;
 }
 .room_info_container{
     background-color:$primaryColor;color:white;
-    width:1.5rem;height:1.5rem;border-radius: 50%;display:flex;align-items: center;justify-content: center;
-    position:absolute;margin-left:10rem;margin-top:1.5rem;cursor:pointer;
+    width:2rem;height:2rem;border-radius: 50%;display:flex;align-items: center;justify-content: center;
+    position:absolute;margin-left:9.5rem;margin-top:1.5rem;cursor:pointer;
+    &:hover{
+        background-color: $secondaryColor;
+    }
+}
+.room_invite{
+    background-color:$primaryColor;color:white;
+    width:2rem;height:2rem;border-radius: 50%;display:flex;align-items: center;justify-content: center;
+    position:absolute;margin-left:-7.6rem;margin-top:1.5rem;cursor:pointer;
     &:hover{
         background-color: $secondaryColor;
     }
@@ -131,4 +139,80 @@ width:15rem;height:auto; margin-bottom:2rem;margin-top: 2rem;text-align: center;
     &:hover{
         background-color: $secondaryColor;
     }
+}
+
+// INVITE MODEL
+.inviteModal_nav{
+    height:2rem;display:flex;flex-direction: row;justify-content: space-between;
+    border-bottom: 1px solid #eee;margin-bottom: 1rem;
+}
+.inviteModal_nav_button{
+    width:100%;display:flex;justify-content: center;align-items: center;
+    cursor:pointer;
+    &:hover{
+        .inviteModal_nav_text{
+            color:$primaryColor
+        }
+    }
+}
+.inviteModal_nav_text{
+    font-size:1.5rem;transition: all .5s;
+}
+.inviteModal_nav_textSelected{
+    font-size:1.5rem;color:$primaryColor;font-weight: bold;
+}
+.inviteModal_container{
+    display:flex;justify-content: center;height:auto;
+    flex-direction: column;
+}
+.inviteModal_title{
+    align-self:center;font-size:1.2rem;font-weight: bold;margin-bottom: 1rem;
+}
+.inviteModal_form{
+    flex-direction: row;display:flex;align-items: center;justify-content: space-between;
+}
+.inviteModal_form_input{
+    border:1px solid #eee;border-radius: .5rem;min-height:1rem;max-height:4rem;max-width:12rem;
+    min-width:12rem;
+    padding:.5rem;
+    &:focus{
+            outline:none;border-color:$primaryColor;border-width:2px;
+    }
+}
+.inviteModal_form_button{
+    border:1px solid #eee;width:4rem;height:2rem;display:flex;align-items: center;justify-content: center;background-color: $primaryColor;
+    color:white;cursor:pointer;
+    &:hover{
+        background-color:$secondaryColor;
+    }
+}
+.inviteModal_send_button{
+    border:1px solid #eee;width:5rem;height:2rem;display:flex;align-items: center;justify-content: center;background-color: $primaryColor;
+    color:white;cursor:pointer;align-self:center;padding:.5rem;margin-top:1rem;
+    &:hover{
+        background-color:$secondaryColor;
+    }
+}
+.invitedList{
+    display:flex;justify-content: center;margin-top: 1rem;height:14.5rem;
+    flex-direction: column;
+}
+.invited_container{
+    height:100%;width:100%;overflow-y: scroll;
+}
+.invited_mail_text{
+    font-size: 1rem;
+}
+.invited_mail{
+    display:flex;align-items: center;justify-content: space-between;
+    padding-right:.5rem;margin-bottom: .5rem;
+}
+.invited_mail_icon{
+    color:$primaryRed;transition:all .5s;cursor:pointer;
+    &:hover{
+        color:$secondaryRed
+    }
+}
+.voters_container{
+    height:20rem;width:100%;overflow-y: scroll
 }

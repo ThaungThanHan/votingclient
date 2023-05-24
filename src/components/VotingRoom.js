@@ -1,14 +1,18 @@
 import React, {useEffect,useState} from "react";
 import {useParams} from "react-router-dom";
 import axios from "axios";
-import {AiOutlineCheck, AiFillCrown,AiOutlineInfo,AiFillCloseCircle} from "react-icons/ai"
+import {AiOutlineCheck, AiFillCrown,AiOutlineInfo,AiFillCloseCircle,AiOutlineUserAdd} from "react-icons/ai"
 import Modal from 'react-modal';
 import PulseLoader from "react-spinners/PulseLoader";
+import {isEmail} from "./functions/validations";
+
 
 import "../styles/VotingRoom.scss"
 const VotingRoom = (props) => {
     const [authenticated,setIsAuthenticated] = useState(false);
     const [optionsModal,setOptionsModal] = useState(false);
+    const [inviteModal,setInviteModal] = useState(true);
+    const [inviteNav,setInviteNav] = useState("INVITE")
     const [confirmModal,setConfirmModal] = useState(false);
     const [isLoading,setIsLoading] = useState(false);
     const [clipBoardText,setClipBoardText] = useState("Copy link to clipboard");
@@ -22,6 +26,19 @@ const VotingRoom = (props) => {
         "second":0
     });
     const dateNow = Date.now();
+    const [emailList,setEmailList] = useState([]);
+    const [onChangeEmail,setOnChangeEmail] = useState("");
+    const [hasEmailError,setHasEmailError] = useState(true);
+    console.log(emailList)
+
+    useEffect(()=>{
+        if(isEmail(onChangeEmail)){
+            setHasEmailError(false)
+        }else{
+            setHasEmailError(true)
+        }
+    },[onChangeEmail])
+
     useEffect(()=>{
         const userToken = localStorage.getItem("authKey");
         if(userToken){
@@ -80,6 +97,11 @@ const VotingRoom = (props) => {
             width:"15rem",height:"20rem",margin:"0 auto",marginTop:"2rem"
         }
     }
+    const InviteModalcustomStyles = {
+        content:{
+            width:"20rem",height:"25rem",margin:"0 auto",marginTop:"2rem"
+        }
+    }
     const confirmModalStyles = {
         content:{
             width:"10rem",height:"6rem",margin:"0 auto",marginTop:"2rem",textAlign:"center"
@@ -98,8 +120,96 @@ const VotingRoom = (props) => {
         navigator.clipboard.writeText(`http://localhost:3000/rooms/${roomData._id}`);
         setClipBoardText("Link Copied!")
     }
+    const onSendInvite = () => [
+        axios.post(`http://localhost:5000/rooms/createVoters`,{id:roomData._id,emailList:emailList},{
+            headers:{"Content-Type":"application/json"}
+        }).then(res=>{
+            setInviteNav("VOTERS");
+            setEmailList([]);
+        }).catch(err=>{
+            console.error(err)
+        })
+    ]
+    const removeAddedVoter = (index) => {
+        const newArray = emailList;
+        newArray.splice(index,1);
+        console.log("ENWWW " + newArray)
+        setEmailList(newArray);
+    }
     return (
         <>
+        {/* // Invite_MODAL */}
+        <Modal isOpen={inviteModal} style={InviteModalcustomStyles}>
+            {/* NAV */}
+            <div className="inviteModal_nav">
+                <div onClick={()=>setInviteNav("INVITE")} className="inviteModal_nav_button">
+                    <p className={inviteNav == "INVITE" ? "inviteModal_nav_textSelected" : "inviteModal_nav_text"}>
+                    Invite</p>
+                </div>
+                <div onClick={()=>setInviteNav("VOTERS")} className="inviteModal_nav_button">
+                    <p 
+                    className={inviteNav == "VOTERS" ? "inviteModal_nav_textSelected" : "inviteModal_nav_text"}>Voters</p>
+                </div>
+            </div>
+            {/* INVITE */}
+            {inviteNav == "INVITE" ?
+            <div className="inviteModal_container">
+                <p className="inviteModal_title">
+                    Enter email address to send invite
+                </p>
+                {/* MODAL FORM */}
+                <form onSubmit={(e)=>{e.preventDefault();setEmailList([...emailList,onChangeEmail]);setOnChangeEmail("")}}
+                className="inviteModal_form">
+                <input required value={onChangeEmail} type="email"
+                    onChange={(e)=>setOnChangeEmail(e.target.value)} 
+                    placeholder="Enter your email address" className="form_input" />
+                    <button disabled={hasEmailError ? true : false}
+                    className="inviteModal_form_button">
+                        <p>Add</p>
+                    </button>
+                </form>
+                {/* INVITED LIST */}
+                <div className="invitedList">
+                    <p className="inviteModal_title">
+                        Email list
+                    </p>
+                    <div className="invited_container">
+                    {emailList ?
+                        emailList.map((email,index)=>
+                            <div className="invited_mail">
+                                <p className="invited_mail_text">
+                                    {email}
+                                </p>
+                                <AiFillCloseCircle onClick={()=>removeAddedVoter(index)}
+                                className="invited_mail_icon" size={25} />
+                            </div>
+                            )
+                            : <p>no mail</p>
+                    }
+                    </div>
+                    <div onClick={()=>onSendInvite()} className="inviteModal_send_button">
+                            <p>Send invite</p>
+                    </div>
+                </div>
+            </div> :
+                    <div className="voters_container">
+                    {roomData.votersList ?
+                        roomData.votersList.map(voter=>
+                            <div className="invited_mail">
+                                <p className="invited_mail_text">
+                                    {voter.email}
+                                </p>
+                                <AiFillCloseCircle className="invited_mail_icon" size={25} />
+                            </div>
+                            )
+                            : <p>no mail</p>
+                    }
+                    </div>
+            }
+
+        </Modal>
+
+        {/* // Room_INFO */}
         <Modal isOpen={optionsModal} style={customStyles}>
             <AiFillCloseCircle 
             onClick={()=>{setOptionsModal(false);setClipBoardText("Copy link to clipboard")}} className="modal_close_btn" />
@@ -152,6 +262,7 @@ const VotingRoom = (props) => {
             <div onClick={()=>setOptionsModal(true)} style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
                 <p className="room_name">{roomName}</p>
                 <div className="room_info_container"><AiOutlineInfo /></div>
+                <div className="room_invite"><AiOutlineUserAdd /></div>
             </div>
             <p className="room_desc">{roomDesc}</p>
             {winner ?
