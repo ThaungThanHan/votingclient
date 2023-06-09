@@ -1,17 +1,24 @@
 import React, {useEffect,useState} from "react";
 import {useParams} from "react-router-dom";
 import axios from "axios";
-import {AiOutlineCheck, AiFillCrown,AiOutlineInfo,AiFillCloseCircle,AiOutlineUserAdd} from "react-icons/ai"
+import {AiOutlineCheck, AiFillCrown,
+    AiFillLock, AiOutlineInfo,AiFillCloseCircle,AiOutlineUserAdd} from "react-icons/ai"
 import Modal from 'react-modal';
 import PulseLoader from "react-spinners/PulseLoader";
 import {isEmail} from "./functions/validations";
 
+//components
+import CodeInput from "./VotingRoom/CodeInput"; 
 
 import "../styles/VotingRoom.scss"
-const VotingRoom = (props) => {
-    const [authenticated,setIsAuthenticated] = useState(false);
+const VotingRoom = (props) =>{
+    const [validVoter,setValidVoter] = useState(false);
+    const [accessCode,setAccessCode] = useState("");
+    const [isCodeValid,setIsCodeValid] = useState(true);
+
+    const [isAuthenticated,setIsAuthenticated] = useState(false);
     const [optionsModal,setOptionsModal] = useState(false);
-    const [inviteModal,setInviteModal] = useState(true);
+    const [inviteModal,setInviteModal] = useState(false);
     const [inviteNav,setInviteNav] = useState("INVITE")
     const [confirmModal,setConfirmModal] = useState(false);
     const [isLoading,setIsLoading] = useState(false);
@@ -136,10 +143,28 @@ const VotingRoom = (props) => {
         console.log("ENWWW " + newArray)
         setEmailList(newArray);
     }
+    const handleSubmitAccessCode = (e) => {
+        e.preventDefault();
+        const accessCodeData = {
+            "id":roomData._id,
+            "accessCode":accessCode
+        }
+        axios.post(`http://localhost:5000/rooms/verifyAccessCode`,accessCodeData,{
+            headers:{"Content-Type":`application/json`}
+        }).then(res=>{
+            setIsCodeValid(true);
+            setValidVoter(res.data);
+        }).catch(err=>{
+            setIsCodeValid(false);
+        })
+    }
     return (
         <>
         {/* // Invite_MODAL */}
         <Modal isOpen={inviteModal} style={InviteModalcustomStyles}>
+            <AiFillCloseCircle 
+            onClick={()=>{setInviteModal(false)}}
+             className="modal_close_btn" />
             {/* NAV */}
             <div className="inviteModal_nav">
                 <div onClick={()=>setInviteNav("INVITE")} className="inviteModal_nav_button">
@@ -232,7 +257,7 @@ const VotingRoom = (props) => {
                     <p>{roomData.voters_limit}</p>
                 </div>
             </div>
-            {authenticated ? <div onClick={()=>handleDeleteRoom(roomData._id)} className="admin_delete">
+            {isAuthenticated ? <div onClick={()=>handleDeleteRoom(roomData._id)} className="admin_delete">
                 <p className="admin_delete_text">Delete</p>
             </div> : null}
             <div>
@@ -258,11 +283,16 @@ const VotingRoom = (props) => {
             />
             }
         </Modal>
+
+        {/* Voting Room Body */}
+        { validVoter ? 
         <div className="room_container">
-            <div onClick={()=>setOptionsModal(true)} style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
+            <div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
                 <p className="room_name">{roomName}</p>
-                <div className="room_info_container"><AiOutlineInfo /></div>
-                <div className="room_invite"><AiOutlineUserAdd /></div>
+                <div onClick={()=>setOptionsModal(true)} className="room_info_container"><AiOutlineInfo /></div>
+                {isAuthenticated ?
+                    <div onClick={()=>setInviteModal(true)} className="room_invite"><AiOutlineUserAdd /></div>
+                : null }
             </div>
             <p className="room_desc">{roomDesc}</p>
             {winner ?
@@ -290,27 +320,44 @@ const VotingRoom = (props) => {
         </div>
         <div className="room_options">
             {participants && participants.map(option=>(
-                <div className={selectedOptionData.id == option.id && !authenticated ? "option_container_after" : "option_container_before" }
+                <div className={selectedOptionData.id == option.id && !isAuthenticated ? "option_container_after" : "option_container_before" }
                 key={option.id}>
                     <div className="option_image">
                         <img className="option_avatar" src={option.avatar}/>
                     </div>
                     <p 
                     className={selectedOptionData.id == option.id ? "option_name_after" : "option_name_before"}>{option.name}</p>
-                    <div onClick={!authenticated ? ()=>selectOption(option) : null} 
+                    <div onClick={!isAuthenticated ? ()=>selectOption(option) : null} 
                     className={selectedOptionData.id == option.id ? "tick_container_after" : "tick_container_before" }>
                         <AiOutlineCheck color={selectedOptionData.id == option.id ? "white" : "black"} size={25} />
                     </div>
                 </div>
             ))}
             </div>
-            <div onClick={roomData.num_voters !== roomData.voters_limit && !authenticated ? ()=>setConfirmModal(true) : null} 
-            className={(roomData.num_voters !== roomData.voters_limit) && !authenticated ? "voting_btn" : "voting_btn_disabled"}>
+            <div onClick={roomData.num_voters !== roomData.voters_limit && !isAuthenticated ? ()=>setConfirmModal(true) : null} 
+            className={(roomData.num_voters !== roomData.voters_limit) && !isAuthenticated ? "voting_btn" : "voting_btn_disabled"}>
                 <p className="voting_btn_text">Vote!</p>
             </div>
             </div>
         }
-        </div>
+        </div> : 
+            <div className="room_container">
+                <div className="codeInput_container">
+                    <AiFillLock size={100}/>
+                    <p className="codeInput_title">Please enter access code</p>
+                    <form onSubmit={(e)=>handleSubmitAccessCode(e)} className="codeInput_form">
+                        <input value={accessCode} onChange={(e)=>setAccessCode(e.target.value)} 
+                        className="codeInput_input" placeholder="Enter access code"/>
+                        {isCodeValid ? null : 
+                        <span className="codeInput_incorrect">Access code invalid</span>}
+                        <button type="submit" className="codeInput_button">
+                            <p className="voting_btn_text">Enter</p>
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        }
         </>
     )   
 }
