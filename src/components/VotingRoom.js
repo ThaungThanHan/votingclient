@@ -14,9 +14,10 @@ import "../styles/VotingRoom.scss"
 const VotingRoom = (props) =>{
     const [validVoter,setValidVoter] = useState(false);
     const [accessCode,setAccessCode] = useState("");
-    const [isCodeValid,setIsCodeValid] = useState(true);
+    const [isCodeValid,setIsCodeValid] = useState();
 
     const [isAuthenticated,setIsAuthenticated] = useState(false);
+    const [isAdmin,setIsAdmin] = useState(false);
     const [optionsModal,setOptionsModal] = useState(false);
     const [inviteModal,setInviteModal] = useState(false);
     const [inviteNav,setInviteNav] = useState("INVITE")
@@ -60,6 +61,11 @@ const VotingRoom = (props) =>{
         }).catch(err=>{
             console.error(err)
         })
+        if(localStorage.getItem("currentUser") == roomData.host){
+            setIsAdmin(true)
+        }else{
+            setIsAdmin(false)
+        }
     },[localStorage.getItem("authKey"),roomData]);
     useEffect(()=>{
         const currentTime = new Date(); //"March 14 2023 21:00:00"
@@ -91,13 +97,14 @@ const VotingRoom = (props) =>{
         const optionData = {
             "id":selectedOptionData.id,
             "votes":selectedOptionData.votes,
-            "num_voters":num_voters
+            "num_voters":num_voters,
+            "token":validVoter.token
         }
         axios.patch(`http://localhost:5000/rooms/${id}`,optionData).then(res=>{
             console.log(`you have voted for ${selectedOptionData.name}`);
             window.location.reload();
             setIsLoading(false);
-        }).catch(err=>console.error(err))
+        }).catch(err=>{setIsLoading(false);console.error(err)})
     }
     const customStyles = {
         content:{
@@ -145,6 +152,7 @@ const VotingRoom = (props) =>{
     }
     const handleSubmitAccessCode = (e) => {
         e.preventDefault();
+        setIsLoading(true);
         const accessCodeData = {
             "id":roomData._id,
             "accessCode":accessCode
@@ -154,7 +162,9 @@ const VotingRoom = (props) =>{
         }).then(res=>{
             setIsCodeValid(true);
             setValidVoter(res.data);
+            setIsLoading(false);
         }).catch(err=>{
+            setIsLoading(false);
             setIsCodeValid(false);
         })
     }
@@ -285,7 +295,7 @@ const VotingRoom = (props) =>{
         </Modal>
 
         {/* Voting Room Body */}
-        { validVoter ? 
+        { validVoter || isAdmin ? 
         <div className="room_container">
             <div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
                 <p className="room_name">{roomName}</p>
@@ -334,27 +344,43 @@ const VotingRoom = (props) =>{
                 </div>
             ))}
             </div>
-            <div onClick={roomData.num_voters !== roomData.voters_limit && !isAuthenticated ? ()=>setConfirmModal(true) : null} 
-            className={(roomData.num_voters !== roomData.voters_limit) && !isAuthenticated ? "voting_btn" : "voting_btn_disabled"}>
-                <p className="voting_btn_text">Vote!</p>
+            <div onClick={roomData.num_voters !== roomData.voters_limit && !isAuthenticated && !validVoter.voteStatus
+             ? ()=>setConfirmModal(true) : null} 
+            className={(roomData.num_voters !== roomData.voters_limit) && !isAuthenticated
+            && !validVoter.voteStatus ? "voting_btn" : "voting_btn_disabled"}>
+                {roomData.num_voters !== roomData.voters_limit ?<div>
+                {validVoter && !validVoter.voteStatus ? 
+                <p className="voting_btn_text">Vote!</p> :
+                <span className="voting_btn_warning">You have already voted once.</span>
+                }</div> :<span className="voting_btn_warning">Voting limit exceeded</span>
+            }
             </div>
             </div>
         }
-        </div> : 
+        </div> :
             <div className="room_container">
                 <div className="codeInput_container">
                     <AiFillLock size={100}/>
                     <p className="codeInput_title">Please enter access code</p>
+                    {!isLoading ?
                     <form onSubmit={(e)=>handleSubmitAccessCode(e)} className="codeInput_form">
                         <input value={accessCode} onChange={(e)=>setAccessCode(e.target.value)} 
                         className="codeInput_input" placeholder="Enter access code"/>
-                        {isCodeValid ? null : 
-                        <span className="codeInput_incorrect">Access code invalid</span>}
+                        {isCodeValid == true ? <span className="codeInput_correct">Access granted</span> : 
+                        isCodeValid == false ? 
+                        <span className="codeInput_incorrect">Access code invalid</span> : null}
                         <button type="submit" className="codeInput_button">
                             <p className="voting_btn_text">Enter</p>
                         </button>
-                    </form>
-
+                    </form> :
+                    <PulseLoader
+                    color="#1ab252"
+                    loading={isLoading}
+                    size={30}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                    />
+                    }
                 </div>
             </div>
         }
