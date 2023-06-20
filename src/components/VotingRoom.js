@@ -267,7 +267,7 @@ const VotingRoom = (props) =>{
                     <p>{roomData.voters_limit}</p>
                 </div>
             </div>
-            {isAuthenticated ? <div onClick={()=>handleDeleteRoom(roomData._id)} className="admin_delete">
+            {isAdmin ? <div onClick={()=>handleDeleteRoom(roomData._id)} className="admin_delete">
                 <p className="admin_delete_text">Delete</p>
             </div> : null}
             <div>
@@ -297,12 +297,13 @@ const VotingRoom = (props) =>{
         {/* Voting Room Body */}
         { validVoter || isAdmin ? 
         <div className="room_container">
-            <div style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
+            <div style={{width:"20rem",
+            display:"flex",flexDirection:"row",alignItems:"center",justifyContent:"space-between"}}>
+                {isAdmin ?
+                    <div onClick={()=>setInviteModal(true)} className="room_invite"><AiOutlineUserAdd /></div>
+                : <div style={{width:"2rem"}}></div> }
                 <p className="room_name">{roomName}</p>
                 <div onClick={()=>setOptionsModal(true)} className="room_info_container"><AiOutlineInfo /></div>
-                {isAuthenticated ?
-                    <div onClick={()=>setInviteModal(true)} className="room_invite"><AiOutlineUserAdd /></div>
-                : null }
             </div>
             <p className="room_desc">{roomDesc}</p>
             {winner ?
@@ -330,25 +331,28 @@ const VotingRoom = (props) =>{
         </div>
         <div className="room_options">
             {participants && participants.map(option=>(
-                <div className={selectedOptionData.id == option.id && !isAuthenticated ? "option_container_after" : "option_container_before" }
+                <div className={selectedOptionData.id == option.id && !isAdmin ? "option_container_after" : "option_container_before" }
                 key={option.id}>
                     <div className="option_image">
                         <img className="option_avatar" src={option.avatar}/>
                     </div>
                     <p 
                     className={selectedOptionData.id == option.id ? "option_name_after" : "option_name_before"}>{option.name}</p>
-                    <div onClick={!isAuthenticated ? ()=>selectOption(option) : null} 
+                    <div onClick={!isAdmin ? ()=>selectOption(option) : null} 
                     className={selectedOptionData.id == option.id ? "tick_container_after" : "tick_container_before" }>
                         <AiOutlineCheck color={selectedOptionData.id == option.id ? "white" : "black"} size={25} />
                     </div>
                 </div>
             ))}
             </div>
-            <div onClick={roomData.num_voters !== roomData.voters_limit && !isAuthenticated && !validVoter.voteStatus
+            <div onClick={roomData.num_voters !== roomData.voters_limit && !isAdmin && !validVoter.voteStatus
              ? ()=>setConfirmModal(true) : null} 
-            className={(roomData.num_voters !== roomData.voters_limit) && !isAuthenticated
+            className={(roomData.num_voters !== roomData.voters_limit) && !isAdmin
             && !validVoter.voteStatus ? "voting_btn" : "voting_btn_disabled"}>
-                {roomData.num_voters !== roomData.voters_limit ?<div>
+                {isAdmin ? 
+                    <span className="voting_btn_warning">You cannot vote as host.</span>
+                :
+                roomData.num_voters !== roomData.voters_limit ?<div>
                 {validVoter && !validVoter.voteStatus ? 
                 <p className="voting_btn_text">Vote!</p> :
                 <span className="voting_btn_warning">You have already voted once.</span>
