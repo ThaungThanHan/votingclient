@@ -15,6 +15,7 @@ const VotingRoom = (props) =>{
     const [validVoter,setValidVoter] = useState(false);
     const [accessCode,setAccessCode] = useState("");
     const [isCodeValid,setIsCodeValid] = useState();
+    const [isFullVoters,setIsFullVoters] = useState();
 
     const [isAuthenticated,setIsAuthenticated] = useState(false);
     const [isAdmin,setIsAdmin] = useState(false);
@@ -87,6 +88,14 @@ const VotingRoom = (props) =>{
             return setRemainingTime({day:remainDay,hour:remainHours,minute:remainMinutes,second:remainSeconds})
         }
     },[dateNow])
+
+    useEffect(()=>{
+        if(roomData.votersList && roomData.votersList.length == roomData.voters_limit){
+            setIsFullVoters(true)
+        }else{
+            setIsFullVoters(false);
+        }
+    },[roomData])
 
     const {roomName,roomDesc,participants,num_voters,winner} = roomData;
     const selectOption = (option) => {
@@ -168,6 +177,19 @@ const VotingRoom = (props) =>{
             setIsCodeValid(false);
         })
     }
+    const removeVoterFromList = (voterEmail) => {
+        const removeVoterInfo = {
+            id:roomData._id,
+            email:voterEmail
+        }
+        axios.post(`http://localhost:5000/rooms/removeVoterFromList`,removeVoterInfo,{
+            headers:{"Content-Type":`application/json`}
+        }).then(res=>{
+            console.log(res)
+        }).catch(err=>{
+            console.log(err)
+        })
+    }
     return (
         <>
         {/* // Invite_MODAL */}
@@ -222,9 +244,16 @@ const VotingRoom = (props) =>{
                             : <p>no mail</p>
                     }
                     </div>
-                    <div onClick={()=>onSendInvite()} className="inviteModal_send_button">
+                    {isFullVoters ? 
+                    <div className="voting_btn_disabled">
+                    <span className="voting_btn_warning">Voters limit exceeded.</span>
+                    </div> 
+                    :
+                    <div onClick={()=>onSendInvite()} 
+                    className="inviteModal_send_button"
+                    >
                             <p>Send invite</p>
-                    </div>
+                    </div>}
                 </div>
             </div> :
                     <div className="voters_container">
@@ -234,7 +263,15 @@ const VotingRoom = (props) =>{
                                 <p className="invited_mail_text">
                                     {voter.email}
                                 </p>
-                                <AiFillCloseCircle className="invited_mail_icon" size={25} />
+                                <p className="invited_mail_status">
+                                    {voter.voteStatus ?
+                                     <p className="invited_mail_voted">Voted</p>: 
+                                     <p className="invited_mail_available">Available</p>}
+                                </p>
+                                <AiFillCloseCircle 
+                                onClick={!voter.voterStatus ? ()=>removeVoterFromList(voter.email) : null}
+                                className={!voter.voteStatus ? "invited_mail_icon" : "invited_mail_icon_disabled"}
+                                size={25} />
                             </div>
                             )
                             : <p>no mail</p>

@@ -197,6 +197,10 @@ width:15rem;height:auto; margin-bottom:2rem;margin-top: 2rem;text-align: center;
         background-color:$secondaryColor;
     }
 }
+.inviteModal_send_button_disabled{
+    border:1px solid #eee;width:5rem;height:2rem;display:flex;align-items: center;justify-content: center;
+    color:white;cursor:pointer;align-self:center;padding:.5rem;margin-top:1rem;
+}
 .invitedList{
     display:flex;justify-content: center;margin-top: 1rem;height:15rem;
     flex-direction: column;
@@ -205,7 +209,16 @@ width:15rem;height:auto; margin-bottom:2rem;margin-top: 2rem;text-align: center;
     height:100%;width:100%;overflow-y: scroll;
 }
 .invited_mail_text{
-    font-size: 1rem;
+    font-size: 1rem;min-width:9rem;max-width:9rem;overflow-wrap: break-word;
+}
+.invited_mail_status{
+    max-width:5rem;
+}
+.invited_mail_voted{
+    color:$primaryRed;font-weight:bold;
+}
+.invited_mail_available{
+    color:$primaryColor;font-weight:bold
 }
 .invited_mail{
     display:flex;align-items: center;justify-content: space-between;
@@ -216,6 +229,9 @@ width:15rem;height:auto; margin-bottom:2rem;margin-top: 2rem;text-align: center;
     &:hover{
         color:$secondaryRed
     }
+}
+.invited_mail_icon_disabled{
+    color:#eee;transition:all .5s;cursor:pointer;
 }
 .voters_container{
     height:20rem;width:100%;overflow-y: scroll
