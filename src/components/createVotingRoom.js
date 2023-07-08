@@ -13,6 +13,7 @@ import PulseLoader from "react-spinners/PulseLoader";
 
 
 const CreateVotingRoom = () => {
+    const HOST = process.env.REACT_APP_hostname;
     const dateNow = new Date();
     const [isLoading,setIsLoading] = useState(false);
     const [isAuthenticated,setIsAuthenticated] = useState(false)
@@ -73,7 +74,7 @@ const CreateVotingRoom = () => {
     useEffect(()=>{
         const userToken = localStorage.getItem("authKey");
         if(userToken){
-            axios.get(`http://localhost:5000/verifyUser`,{
+            axios.get(`${HOST}/verifyUser`,{
                 headers:{Authorization:`Bearer ${userToken}`}
             }).then(res=>setIsAuthenticated(true)).catch(err=>setIsAuthenticated(false));
         }else{
@@ -105,7 +106,7 @@ const CreateVotingRoom = () => {
     const handleCreateRoom = async() => {
         setIsLoading(true);
         const roomId = uuidv4().slice(0,6);
-        QRCode.toDataURL(`http://localhost:3000/rooms/${roomId}`)
+        QRCode.toDataURL(`${HOST}/rooms/${roomId}`)
         .then(url => {
         const participants = Object.values(options);
         const participantsData = [];
@@ -144,7 +145,7 @@ const CreateVotingRoom = () => {
         //     console.log(key, value);
         // }
         const token = localStorage.getItem("authKey")
-        axios.post("http://localhost:5000/rooms",formData,{
+        axios.post(`${HOST}/rooms`,formData,{
             headers:{"Content-Type": "multipart/form-data"}
         }).then(res=>{
             setIsLoading(false);

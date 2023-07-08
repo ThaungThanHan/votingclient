@@ -5,6 +5,7 @@ import "../styles/hostdashboard.scss";
 import "../styles/signup.scss"
 
 const HostDashboard = () => {
+    const HOST = process.env.REACT_APP_hostname
     const[isAuthenticated,setIsAuthenticated] = useState(false);
     const [currentNav,setCurrentNav] = useState("All Rooms")
     const [roomsByHost,setRoomsByHost] = useState([])
@@ -18,19 +19,19 @@ const HostDashboard = () => {
     useEffect(()=>{
         const userToken = localStorage.getItem("authKey");
         if(userToken){
-            axios.get(`http://localhost:5000/verifyUser`,{
+            axios.get(`${HOST}/verifyUser`,{
                 headers:{Authorization:`Bearer ${userToken}`}
             }).then(res=>setIsAuthenticated(true)).catch(err=>setIsAuthenticated(false));
         }else{
             setIsAuthenticated(false);
         }
-        axios.post(`http://localhost:5000/users/${localStorage.getItem('currentUser')}`).then(res=>{
+        axios.post(`${HOST}/users/${localStorage.getItem('currentUser')}`).then(res=>{
             setCurrentUser(res.data)
         }).catch(err=>console.log(err))
     },[])
     useEffect(()=>{
         if(currentUser){
-            axios.post(`http://localhost:5000/rooms/host`,{userId:currentUser._id},{
+            axios.post(`${HOST}/rooms/host`,{userId:currentUser._id},{
                 headers:{
                     "Authorization":`Bearer ${localStorage.getItem("authKey")}`
                 }
@@ -47,7 +48,7 @@ const HostDashboard = () => {
     }
     const deleteRoom = (roomId) => {
         const token = localStorage.getItem("authKey")
-        axios.post(`http://localhost:5000/rooms/delete/${roomId}`,{
+        axios.post(`${HOST}/rooms/delete/${roomId}`,{
             headers:{Authorization:`Bearer ${token}`}
         }).then(res=>console.log(res)).catch(err=>console.log(err))
     }

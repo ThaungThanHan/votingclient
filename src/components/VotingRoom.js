@@ -12,6 +12,7 @@ import CodeInput from "./VotingRoom/CodeInput";
 
 import "../styles/VotingRoom.scss"
 const VotingRoom = (props) =>{
+    const HOST = process.env.REACT_APP_hostname
     const [validVoter,setValidVoter] = useState(false);
     const [accessCode,setAccessCode] = useState("");
     const [isCodeValid,setIsCodeValid] = useState();
@@ -38,7 +39,6 @@ const VotingRoom = (props) =>{
     const [emailList,setEmailList] = useState([]);
     const [onChangeEmail,setOnChangeEmail] = useState("");
     const [hasEmailError,setHasEmailError] = useState(true);
-    console.log(emailList)
 
     useEffect(()=>{
         if(isEmail(onChangeEmail)){
@@ -51,13 +51,13 @@ const VotingRoom = (props) =>{
     useEffect(()=>{
         const userToken = localStorage.getItem("authKey");
         if(userToken){
-            axios.get(`http://localhost:5000/verifyUser`,{
+            axios.get(`${HOST}/verifyUser`,{
                 headers:{Authorization:`Bearer ${userToken}`}
             }).then(res=>setIsAuthenticated(true)).catch(err=>setIsAuthenticated(false));
         }else{
             setIsAuthenticated(false);
         }
-        axios.get(`http://localhost:5000/rooms/${id}`).then(res=>{
+        axios.get(`${HOST}/rooms/${id}`).then(res=>{
             setRoomData(res.data)
         }).catch(err=>{
             console.error(err)
@@ -109,7 +109,7 @@ const VotingRoom = (props) =>{
             "num_voters":num_voters,
             "token":validVoter.token
         }
-        axios.patch(`http://localhost:5000/rooms/${id}`,optionData).then(res=>{
+        axios.patch(`${HOST}/rooms/${id}`,optionData).then(res=>{
             console.log(`you have voted for ${selectedOptionData.name}`);
             window.location.reload();
             setIsLoading(false);
@@ -131,7 +131,7 @@ const VotingRoom = (props) =>{
         }
     }
     const handleDeleteRoom = (id) => {
-        axios.post(`http://localhost:5000/rooms/delete/${id}`,null,{headers:{   // 401 if not null put in in body or "," after headers object.
+        axios.post(`${HOST}/rooms/delete/${id}`,null,{headers:{   // 401 if not null put in in body or "," after headers object.
             "Authorization":`Bearer ${localStorage.getItem("authKey")}`
         }},).then(res=>{
             window.location.replace(`http://localhost:3000/dashboard/${localStorage.getItem("currentUser")}`);
@@ -140,11 +140,11 @@ const VotingRoom = (props) =>{
         })
     }
     const onClickClipboard = () => {
-        navigator.clipboard.writeText(`http://localhost:3000/rooms/${roomData._id}`);
+        navigator.clipboard.writeText(`${HOST}/rooms/${roomData._id}`);
         setClipBoardText("Link Copied!")
     }
     const onSendInvite = () => [
-        axios.post(`http://localhost:5000/rooms/createVoters`,{id:roomData._id,emailList:emailList},{
+        axios.post(`${HOST}/rooms/createVoters`,{id:roomData._id,emailList:emailList},{
             headers:{"Content-Type":"application/json"}
         }).then(res=>{
             setInviteNav("VOTERS");
@@ -166,7 +166,7 @@ const VotingRoom = (props) =>{
             "id":roomData._id,
             "accessCode":accessCode
         }
-        axios.post(`http://localhost:5000/rooms/verifyAccessCode`,accessCodeData,{
+        axios.post(`${HOST}/rooms/verifyAccessCode`,accessCodeData,{
             headers:{"Content-Type":`application/json`}
         }).then(res=>{
             setIsCodeValid(true);
@@ -182,7 +182,7 @@ const VotingRoom = (props) =>{
             id:roomData._id,
             email:voterEmail
         }
-        axios.post(`http://localhost:5000/rooms/removeVoterFromList`,removeVoterInfo,{
+        axios.post(`${HOST}/rooms/removeVoterFromList`,removeVoterInfo,{
             headers:{"Content-Type":`application/json`}
         }).then(res=>{
             console.log(res)

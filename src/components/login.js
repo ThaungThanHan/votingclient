@@ -12,10 +12,11 @@ const Login = () => {
     const [formModal,setFormModal] = useState(false);
     const [successMes,setSuccessMes] = useState("");
     const [errMes,setErrMes] = useState("")
+    const HOST = process.env.REACT_APP_hostname;
     useEffect(()=>{
         const userToken = localStorage.getItem("authKey");
         if(userToken){
-            axios.get(`http://localhost:5000/verifyUser`,{
+            axios.get(`${HOST}/verifyUser`,{
                 headers:{Authorization:`Bearer ${userToken}`}
             }).then(res=>setIsAuthenticated(true)).catch(err=>setIsAuthenticated(false));
         }else{
@@ -24,7 +25,11 @@ const Login = () => {
     },[localStorage.getItem("authKey")])
     const onLogInUser = (e) => {
         e.preventDefault();
-        axios.post("http://localhost:5000/login",loginForm).then(res=>{
+        axios.post(`${HOST}/login`,loginForm,{
+            "headers":{
+                'Content-Type': 'application/json',
+            }
+        }).then(res=>{
             localStorage.setItem("authKey",res.data.authToken);
             localStorage.setItem("currentUser",res.data.userId);
             setFormModal(true);

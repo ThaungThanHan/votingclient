@@ -8,10 +8,11 @@ import LOGO from "../assets/images/votingapp_logo.png"
 const Homepage = () => {
     const [roomId,setRoomId] = useState("");
     const [isAuthenticated,setIsAuthenticated] = useState(false);
+    const HOST = process.env.REACT_APP_hostname;
     useEffect(()=>{
         const userToken = localStorage.getItem("authKey");
         if(userToken){
-            axios.get(`http://localhost:5000/verifyUser`,{
+            axios.get(`${HOST}/verifyUser`,{
                 headers:{Authorization:`Bearer ${userToken}`}
             }).then(res=>setIsAuthenticated(true)).catch(err=>setIsAuthenticated(false));
         }else{
