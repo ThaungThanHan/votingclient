@@ -18,20 +18,30 @@ const Homepage = () => {
         }else{
             setIsAuthenticated(false);
         }
-        console.log("AUTH " + isAuthenticated)
     },[localStorage.getItem("authKey")])
     return (
+        <>
+        <div className="logo_container">
+        <img style={{width:"100%",height:"100%"}} src={LOGO} />
+        </div>
         <div className="homepageContainer">
                 {/* <h1 className="homepageEntry_logo">Voting App</h1> */}
-                <div className="logo_container">
-                    <img style={{width:"100%",height:"100%"}} src={LOGO} />
-                </div>
                 <input onChange={(e)=>setRoomId(e.target.value)} className="homepage_Search" placeholder="Enter voting room ID" />
                 <Link style={{textDecoration:"none"}} 
                     to={roomId !== "" ?  `/rooms/${roomId}` : null}>
                 <div className="Search_btn">
                     <p className="Search_btn_text">ENTER</p>
                 </div></Link>
+                {isAuthenticated ?
+                <Link style={{textDecoration:"none"}} 
+                to={isAuthenticated ? `/dashboard/${localStorage.getItem("currentUser")}` : "/"}>
+                    <div className="Search_btn">
+                        <p className="Search_btn_text">GO TO DASHBOARD</p>
+                    </div>
+                </Link>
+                    :
+                    null
+                }
                 <Link style={{textDecoration:"none"}} 
                 to={isAuthenticated ? "/createroom" : "/login"}>
                     <div className="Search_btn">
@@ -39,7 +49,9 @@ const Homepage = () => {
                     </div>
                 </Link>
 
+
         </div>
+        </>
     )
 }
 

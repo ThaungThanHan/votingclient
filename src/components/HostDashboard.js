@@ -25,7 +25,7 @@ const HostDashboard = () => {
         }else{
             setIsAuthenticated(false);
         }
-        axios.post(`${HOST}/users/${localStorage.getItem('currentUser')}`).then(res=>{
+        axios.get(`${HOST}/users/${localStorage.getItem('currentUser')}`).then(res=>{
             setCurrentUser(res.data)
         }).catch(err=>console.log(err))
     },[])
@@ -48,7 +48,8 @@ const HostDashboard = () => {
     }
     const deleteRoom = (roomId) => {
         const token = localStorage.getItem("authKey")
-        axios.post(`${HOST}/rooms/delete/${roomId}`,{
+        console.log("TOKEN " + token)
+        axios.post(`${HOST}/rooms/delete/${roomId}`,null,{
             headers:{Authorization:`Bearer ${token}`}
         }).then(res=>console.log(res)).catch(err=>console.log(err))
     }
@@ -60,6 +61,9 @@ const HostDashboard = () => {
             <p className="dashboard_username">
                 Hello, {currentUser ? currentUser.username : null}
             </p>
+            <div onClick={()=>window.location.replace("/")} className="dashboard_btn">
+                <p className="dashboard_btn_text">Home</p>
+            </div>
             <div onClick={()=>window.location.replace("/createroom")} className="dashboard_btn">
                 <p className="dashboard_btn_text">Create Voting Room</p>
             </div>

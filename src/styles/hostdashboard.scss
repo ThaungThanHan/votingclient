@@ -53,9 +53,9 @@
     }
 }
 .dashboard_btn{
-    border:1px solid #eee;width:auto;height:2rem;padding:.5rem;display:flex;align-items: center;
+    border:1px solid #eee;min-width:5rem;height:2rem;padding:.5rem;display:flex;align-items: center;
     border-radius:.5rem;background-color: $primaryColor;color:black;cursor:pointer;margin-right:1rem;
-    transition:all .5s;
+    transition:all .5s;justify-content:center;
     &:hover{
         color: white;
     }

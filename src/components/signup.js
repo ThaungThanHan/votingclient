@@ -58,12 +58,15 @@ const SignUp = () => {
     return(
         <div>
         {isAuthenticated ?
-            <div className="error_container">
-            <p className="error_container_text">You are already logged in.</p>
-            <div onClick={()=>window.location.replace(`/dashboard/${localStorage.getItem("currentUser")}`)} className="error_container_btn">
-                <p className="error_container_btn_text">View profile</p>
+            <Modal isOpen={isAuthenticated} style={customStyles}>
+            <p className="successModalText">You have successfully logged in.</p> 
+            <div className="modalbtn_container">
+                <div onClick={()=>window.location.replace("/createroom")} className="modalBtn"><p className="modalBtnText">Create a voting room</p></div>
+                <div onClick={()=>window.location.replace(`/dashboard/${localStorage.getItem("currentUser")}`)} className="modalBtn">
+                    <p className="modalBtnText">View dashboard</p>
+                </div>
             </div>
-            </div>        
+            </Modal>   
         :
         <div className="signup_container">
             <p className="login_title">Create an account</p>

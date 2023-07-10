@@ -39,6 +39,7 @@ const VotingRoom = (props) =>{
     const [emailList,setEmailList] = useState([]);
     const [onChangeEmail,setOnChangeEmail] = useState("");
     const [hasEmailError,setHasEmailError] = useState(true);
+    const [hostInfo,setHostInfo] = useState(null);
 
     useEffect(()=>{
         if(isEmail(onChangeEmail)){
@@ -67,6 +68,10 @@ const VotingRoom = (props) =>{
         }else{
             setIsAdmin(false)
         }
+        axios.get(`${HOST}/users/${roomData.host}`).then(res=>{
+            console.log(res.data)
+            setHostInfo(res.data);
+        }).catch(err=>console.log(err))
     },[localStorage.getItem("authKey"),roomData]);
     useEffect(()=>{
         const currentTime = new Date(); //"March 14 2023 21:00:00"
@@ -140,7 +145,7 @@ const VotingRoom = (props) =>{
         })
     }
     const onClickClipboard = () => {
-        navigator.clipboard.writeText(`${HOST}/rooms/${roomData._id}`);
+        navigator.clipboard.writeText(`http://localhost:3000/rooms/${roomData._id}`);
         setClipBoardText("Link Copied!")
     }
     const onSendInvite = () => [
@@ -297,7 +302,7 @@ const VotingRoom = (props) =>{
             <div className="admin_container">
                 <div className="host_container">
                     <p>Host:</p>
-                    <p>{roomData.host}</p>
+                    <p>{hostInfo && hostInfo.username}</p>
                 </div>
                 <div className="host_container">
                     <p>Voting Limit:</p>
@@ -401,7 +406,9 @@ const VotingRoom = (props) =>{
         </div> :
             <div className="room_container">
                 <div className="codeInput_container">
-                    <AiFillLock size={100}/>
+                    <h1>{roomData.roomName}</h1>
+                    <h2>by {hostInfo && hostInfo.username}</h2>
+                    {/* <AiFillLock size={70}/> */}
                     <p className="codeInput_title">Please enter access code</p>
                     {!isLoading ?
                     <form onSubmit={(e)=>handleSubmitAccessCode(e)} className="codeInput_form">
