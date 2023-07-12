@@ -149,7 +149,7 @@ const CreateVotingRoom = () => {
             headers:{"Content-Type": "multipart/form-data"}
         }).then(res=>{
             setIsLoading(false);
-            window.location.replace(`http://localhost:3000/rooms/${roomId}`)
+            window.location.replace(`${process.env.REACT_APP_domain}rooms/${roomId}`)
         }).catch(err=>console.log(err));
         })
         .catch(err => {

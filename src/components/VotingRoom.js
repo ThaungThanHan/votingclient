@@ -139,13 +139,13 @@ const VotingRoom = (props) =>{
         axios.post(`${HOST}/rooms/delete/${id}`,null,{headers:{   // 401 if not null put in in body or "," after headers object.
             "Authorization":`Bearer ${localStorage.getItem("authKey")}`
         }},).then(res=>{
-            window.location.replace(`http://localhost:3000/dashboard/${localStorage.getItem("currentUser")}`);
+            window.location.replace(`${process.env.REACT_APP_domain}dashboard/${localStorage.getItem("currentUser")}`);
         }).catch(err=>{
             console.error(err);
         })
     }
     const onClickClipboard = () => {
-        navigator.clipboard.writeText(`http://localhost:3000/rooms/${roomData._id}`);
+        navigator.clipboard.writeText(`${process.env.REACT_APP_domain}rooms/${roomData._id}`);
         setClipBoardText("Link Copied!")
     }
     const onSendInvite = () => [

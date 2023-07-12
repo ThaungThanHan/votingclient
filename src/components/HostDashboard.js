@@ -97,7 +97,7 @@ const HostDashboard = () => {
                     <td className="dashboard_tablecontent">{room.winner ? room.winner.name : "-"}</td>
                     <td className="dashboard_tablecontent">
                         <div className="table_actions_container">
-                            <div onClick={()=>window.location.replace(`http://localhost:3000/rooms/${room._id}`)} className="table_actions_btn">
+                            <div onClick={()=>window.location.replace(`${process.env.REACT_APP_domain}rooms/${room._id}`)} className="table_actions_btn">
                                 <p className="table_actions_btn_text">View</p>
                             </div>
                             <div onClick={()=>deleteRoom(room._id)} className="table_actions_btn_delete">
@@ -117,7 +117,7 @@ const HostDashboard = () => {
                     <td className="dashboard_tablecontent">{room.winner ? room.winner.name : "-"}</td>
                     <td className="dashboard_tablecontent">
                         <div className="table_actions_container">
-                            <div onClick={()=>window.location.replace(`http://localhost:3000/rooms/${room._id}`)} className="table_actions_btn">
+                            <div onClick={()=>window.location.replace(`${process.env.REACT_APP_domain}rooms/${room._id}`)} className="table_actions_btn">
                                 <p className="table_actions_btn_text">View</p>
                             </div>
                             <div onClick={()=>deleteRoom(room._id)} className="table_actions_btn_delete">
